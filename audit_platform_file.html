@@ -1,0 +1,1813 @@
+            <div class="action-buttons">
+                <button class="btn" onclick="saveVulnData()">💾 Sauvegarder résultats</button>
+                <button class="btn btn-secondary" onclick="exportVulnReport()">📤 Export rapport vulnérabilités</button>
+            </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div id="security" class="tab-content">
+            <div class="form-section">
+                <h3>🛡️ Dispositifs de sécurité</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Antivirus</label>
+                        <select id="antivirusStatus">
+                            <option value="">Sélectionner...</option>
+                            <option value="jour">Installé et à jour</option>
+                            <option value="obsolete">Installé mais obsolète</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Firewall</label>
+                        <select id="firewallConfig">
+                            <option value="">Sélectionner...</option>
+                            <option value="configure">Configuré</option>
+                            <option value="defaut">Par défaut</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="saveSecurityData()">💾 Sauvegarder</button>
+                <button class="btn btn-secondary" onclick="exportSecurity()">📤 Exporter</button>
+            </div>
+        </div>
+
+        <!-- Interviews Tab -->
+        <div id="interviews" class="tab-content">
+            <div class="form-section">
+                <h3>👥 Planning des entretiens</h3>
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Interlocuteur</th>
+                            <th>Focus</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="interviewsTable">
+                        <tr>
+                            <td>J4 (Jeudi)</td>
+                            <td>DG + DSI</td>
+                            <td>Vision stratégique, Infrastructure</td>
+                            <td><span class="status-badge status-good">Planifié</span></td>
+                            <td><button class="btn btn-secondary" onclick="startInterview(1)">Démarrer</button></td>
+                        </tr>
+                        <tr>
+                            <td>J5 (Vendredi)</td>
+                            <td>DAI + DFC</td>
+                            <td>Contrôles internes, Risques</td>
+                            <td><span class="status-badge status-average">À planifier</span></td>
+                            <td><button class="btn btn-secondary" onclick="startInterview(2)">Démarrer</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-section" id="interviewForm" style="display: none;">
+                <h3>📝 Compte-rendu d'entretien</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Interlocuteur</label>
+                        <input type="text" id="interviewee" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="interviewDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Points clés abordés</label>
+                    <textarea id="keyPoints" rows="4" placeholder="Résumé des principaux points discutés..."></textarea>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn" onclick="saveInterview()">💾 Sauvegarder l'entretien</button>
+                    <button class="btn btn-secondary" onclick="cancelInterview()">❌ Annuler</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <div class="form-section">
+                <h3>📊 Génération de rapports</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" onclick="generateReport('inventory')">
+                        <h3>📋</h3>
+                        <p>Rapport d'inventaire</p>
+                    </div>
+                    <div class="dashboard-card" onclick="generateReport('infrastructure')">
+                        <h3>🏗️</h3>
+                        <p>Rapport infrastructure</p>
+                    </div>
+                    <div class="dashboard-card" onclick="generateReport('mapping')">
+                        <h3>🗺️</h3>
+                        <p>Cartographie réseau</p>
+                    </div>
+                    <div class="dashboard-card" onclick="generateReport('final')">
+                        <h3>📄</h3>
+                        <p>Rapport final</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>📋 Aperçu du rapport</h3>
+                <div class="report-preview" id="reportPreview">
+                    <p>Sélectionnez un type de rapport pour voir l'aperçu...</p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>📤 Options d'export</h3>
+                <div class="export-options">
+                    <button class="btn" onclick="exportReport('pdf')">📄 Export PDF</button>
+                    <button class="btn btn-secondary" onclick="exportReport('word')">📝 Export Word</button>
+                    <button class="btn btn-success" onclick="sendReport()">📧 Envoyer par email</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users" class="tab-content">
+            <div class="form-section">
+                <h3>👤 Gestion des utilisateurs</h3>
+                <div class="alert alert-info">
+                    <strong>ℹ️ Administration :</strong> Gérez les accès et permissions des utilisateurs de la plateforme d'audit.
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>➕ Ajouter un nouvel utilisateur</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nom complet</label>
+                        <input type="text" id="newUserName" placeholder="Ex: Abdoul Razak TASSEMBEDO">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="newUserEmail" placeholder="Ex: a.tassembedo@e-defence.bf">
+                    </div>
+                    <div class="form-group">
+                        <label>Rôle</label>
+                        <select id="newUserRole">
+                            <option value="">Sélectionner un rôle...</option>
+                            <option value="admin">👑 Administrateur</option>
+                            <option value="auditor_senior">🎯 Auditeur Senior</option>
+                            <option value="auditor">🔍 Auditeur</option>
+                            <option value="viewer_client">👁️ Client (Lecture seule)</option>
+                            <option value="viewer_internal">📊 Visualiseur interne</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Organisation</label>
+                        <select id="newUserOrg">
+                            <option value="">Sélectionner...</option>
+                            <option value="e-defence">E-DEFENCE (Cabinet d'audit)</option>
+                            <option value="abi">ABI (Client)</option>
+                            <option value="external">Externe (Partenaire)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn" onclick="addNewUser()">➕ Créer utilisateur</button>
+                    <button class="btn btn-secondary" onclick="clearUserForm()">🗑️ Effacer</button>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>👥 Liste des utilisateurs</h3>
+                <table class="inventory-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Organisation</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersList">
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">LN</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Lassané NACOULMA</div>
+                                        <div style="font-size: 0.8rem; color: #7f8c8d;">Chef de Mission</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>l.nacoulma@e-defence.bf</td>
+                            <td><span class="status-badge status-excellent">👑 Administrateur</span></td>
+                            <td>E-DEFENCE</td>
+                            <td><span class="status-badge status-good">🟢 Actif</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editUser('1')" style="padding: 5px 10px; font-size: 0.8rem; margin: 2px;">✏️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2ecc71, #27ae60); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AT</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Abdoul Razak TASSEMBEDO</div>
+                                        <div style="font-size: 0.8rem; color: #7f8c8d;">Consultant Senior</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>a.tassembedo@e-defence.bf</td>
+                            <td><span class="status-badge status-good">🎯 Auditeur Senior</span></td>
+                            <td>E-DEFENCE</td>
+                            <td><span class="status-badge status-good">🟢 Actif</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editUser('2')" style="padding: 5px 10px; font-size: 0.8rem; margin: 2px;">✏️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">IO</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Ismaël OUEDRAOGO</div>
+                                        <div style="font-size: 0.8rem; color: #7f8c8d;">Consultant E-DEFENCE</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>i.ouedraogo@e-defence.bf</td>
+                            <td><span class="status-badge status-average">🔍 Auditeur</span></td>
+                            <td>E-DEFENCE</td>
+                            <td><span class="status-badge status-good">🟢 Actif</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editUser('3')" style="padding: 5px 10px; font-size: 0.8rem; margin: 2px;">✏️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #3498db, #2980b9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">BB</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Boureima BANCE</div>
+                                        <div style="font-size: 0.8rem; color: #7f8c8d;">DSI - ABI</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>b.bance@abi.bf</td>
+                            <td><span class="status-badge status-average">👁️ Client (Lecture)</span></td>
+                            <td>ABI</td>
+                            <td><span class="status-badge status-good">🟢 Actif</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editUser('4')" style="padding: 5px 10px; font-size: 0.8rem; margin: 2px;">✏️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">DB</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Daouda BELEMBIRE</div>
+                                        <div style="font-size: 0.8rem; color: #7f8c8d;">DAI - ABI</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>d.belembire@abi.bf</td>
+                            <td><span class="status-badge status-average">👁️ Client (Lecture)</span></td>
+                            <td>ABI</td>
+                            <td><span class="status-badge status-good">🟢 Actif</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editUser('5')" style="padding: 5px 10px; font-size: 0.8rem; margin: 2px;">✏️</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="modal">
+        <div class="modal-content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Traitement en cours...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global data storage
+        let auditData = {
+            site: {},
+            inventory: {},
+            infrastructure: {},
+            mapping: {
+                networkDevices: [],
+                topology: null
+            },
+            vulnerabilities: {
+                results: []
+            },
+            security: {
+                policies: []
+            },
+            interviews: [],
+            users: [
+                {
+                    id: 1,
+                    name: "Lassané NACOULMA",
+                    email: "l.nacoulma@e-defence.bf",
+                    role: "admin",
+                    organization: "e-defence",
+                    permissions: ["scan", "edit", "export", "admin"],
+                    status: "active"
+                },
+                {
+                    id: 2,
+                    name: "Abdoul Razak TASSEMBEDO", 
+                    email: "a.tassembedo@e-defence.bf",
+                    role: "auditor_senior",
+                    organization: "e-defence",
+                    permissions: ["scan", "edit", "export"],
+                    status: "active"
+                },
+                {
+                    id: 3,
+                    name: "Ismaël OUEDRAOGO",
+                    email: "i.ouedraogo@e-defence.bf",
+                    role: "auditor",
+                    organization: "e-defence", 
+                    permissions: ["scan", "edit"],
+                    status: "active"
+                },
+                {
+                    id: 4,
+                    name: "Boureima BANCE",
+                    email: "b.bance@abi.bf", 
+                    role: "viewer_client",
+                    organization: "abi",
+                    permissions: ["view"],
+                    status: "active"
+                },
+                {
+                    id: 5,
+                    name: "Daouda BELEMBIRE",
+                    email: "d.belembire@abi.bf",
+                    role: "viewer_client", 
+                    organization: "abi",
+                    permissions: ["view"],
+                    status: "active"
+                }
+            ],
+            currentUser: {
+                id: 1,
+                name: "Lassané NACOULMA",
+                role: "admin",
+                permissions: ["scan", "edit", "export", "admin"]
+            },
+            progress: {
+                currentPhase: 1,
+                percentage: 15,
+                completedTasks: 0,
+                totalTasks: 80
+            }
+        };
+
+        // Tab navigation
+        function showTab(tabName, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        // Permission checking functions
+        function hasPermission(permission) {
+            return auditData.currentUser.permissions.includes(permission) || auditData.currentUser.permissions.includes('admin');
+        }
+
+        // Update inventory counters
+        function updateInventory() {
+            const desktops = parseInt(document.getElementById('desktops').value) || 0;
+            const laptops = parseInt(document.getElementById('laptops').value) || 0;
+            const tablets = parseInt(document.getElementById('tablets').value) || 0;
+            const printers = parseInt(document.getElementById('printers').value) || 0;
+            
+            const total = desktops + laptops + tablets + printers;
+            
+            document.getElementById('totalDevices').textContent = total;
+            
+            auditData.inventory = {
+                desktops: desktops,
+                laptops: laptops,
+                tablets: tablets,
+                printers: printers,
+                total: total
+            };
+        }
+
+        // Network scanning functions
+        function startNetworkScan() {
+            if (!hasPermission('scan')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour lancer des scans réseau.');
+                return;
+            }
+            
+            showLoading();
+            document.getElementById('networkDevicesList').innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #3498db;">
+                        <em>🔄 Scan en cours... Découverte des équipements réseau</em>
+                    </td>
+                </tr>
+            `;
+            
+            setTimeout(() => {
+                const mockDevices = [
+                    { ip: '192.168.1.1', type: 'Routeur', manufacturer: 'Cisco', services: 'HTTP, SSH, SNMP', status: 'Actif' },
+                    { ip: '192.168.1.10', type: 'Switch', manufacturer: 'HP', services: 'SNMP, Telnet', status: 'Actif' },
+                    { ip: '192.168.1.20', type: 'Firewall', manufacturer: 'Fortinet', services: 'HTTPS, SSH', status: 'Actif' },
+                    { ip: '192.168.1.100', type: 'Serveur', manufacturer: 'Dell', services: 'RDP, SMB, HTTP', status: 'Actif' }
+                ];
+                
+                auditData.mapping.networkDevices = mockDevices;
+                updateNetworkDevicesTable();
+                document.getElementById('networkDevicesFound').textContent = mockDevices.length;
+                
+                hideLoading();
+                alert('✅ Découverte réseau terminée ! ' + mockDevices.length + ' équipements détectés.');
+            }, 3000);
+        }
+
+        function updateNetworkDevicesTable() {
+            const tableBody = document.getElementById('networkDevicesList');
+            if (auditData.mapping.networkDevices.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #7f8c8d;">
+                            <em>Aucun équipement découvert. Lancez un scan de réseau.</em>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = auditData.mapping.networkDevices.map(device => `
+                <tr>
+                    <td><strong>${device.ip}</strong></td>
+                    <td>${device.type}</td>
+                    <td>${device.manufacturer}</td>
+                    <td>${device.services}</td>
+                    <td><span class="status-badge status-good">${device.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function launchNmap() {
+            if (!hasPermission('scan')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour utiliser Nmap.');
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                const modal = document.getElementById('loadingModal');
+                modal.querySelector('.modal-content').innerHTML = `
+                    <h3>🎯 Résultats Nmap</h3>
+                    <div style="background: #2c3e50; color: #ecf0f1; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <pre style="font-family: 'Courier New', monospace; font-size: 0.9rem;">Starting Nmap 7.93 scan...
+
+Host: 192.168.1.1 (router.abi.bf)
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.4
+80/tcp   open  http    nginx 1.18.0
+443/tcp  open  https   nginx 1.18.0
+
+Host: 192.168.1.100 (server.abi.bf)  
+PORT     STATE SERVICE VERSION
+135/tcp  open  msrpc   Microsoft Windows RPC
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+
+Scan completed: 6 hosts up, scanned in 45 seconds</pre>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn" onclick="hideLoading()">✅ Fermer</button>
+                        <button class="btn btn-secondary" onclick="exportScanResults()">📤 Exporter</button>
+                    </div>
+                `;
+            }, 4000);
+        }
+
+        // Vulnerability scanning functions
+        function startVulnScan(type) {
+            if (!hasPermission('scan')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour lancer des scans de vulnérabilités.');
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                let mockVulns = [];
+                
+                if (type === 'network') {
+                    mockVulns = [
+                        { id: 'NET-001', severity: 'Critique', type: 'Port ouvert', equipment: 'Serveur Web', description: 'Port 21 FTP ouvert sans chiffrement' },
+                        { id: 'NET-002', severity: 'Élevé', type: 'Service exposé', equipment: 'Routeur', description: 'Interface admin accessible depuis Internet' }
+                    ];
+                } else if (type === 'web') {
+                    mockVulns = [
+                        { id: 'WEB-001', severity: 'Élevé', type: 'Injection SQL', equipment: 'Application ABI', description: 'Vulnérabilité injection SQL détectée' }
+                    ];
+                }
+                
+                auditData.vulnerabilities.results.push(...mockVulns);
+                updateVulnCounters();
+                
+                hideLoading();
+                alert(`✅ Scan ${type} terminé ! ${mockVulns.length} vulnérabilité(s) détectée(s).`);
+            }, 4000);
+        }
+
+        function launchNessus() {
+            if (!hasPermission('scan')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour utiliser Nessus.');
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                const nessusVulns = [
+                    { id: 'NES-001', severity: 'Critique', type: 'RCE', equipment: 'Serveur Windows', description: 'Exécution code à distance MS17-010' },
+                    { id: 'NES-002', severity: 'Élevé', type: 'Privilege', equipment: 'Active Directory', description: 'Escalade privilèges possible' }
+                ];
+                
+                auditData.vulnerabilities.results.push(...nessusVulns);
+                updateVulnCounters();
+                
+                hideLoading();
+                alert(`✅ Scan Nessus terminé ! ${nessusVulns.length} vulnérabilités critiques détectées.`);
+            }, 5000);
+        }
+
+        function executeVulnScan() {
+            if (!hasPermission('scan')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour lancer des scans complets.');
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                const comprehensiveVulns = [
+                    { id: 'COMP-001', severity: 'Critique', type: 'RCE', equipment: 'Serveur Web', description: 'Exécution code à distance Apache' },
+                    { id: 'COMP-002', severity: 'Critique', type: 'Injection', equipment: 'Base données', description: 'Injection SQL formulaire login' },
+                    { id: 'COMP-003', severity: 'Élevé', type: 'Crypto', equipment: 'Serveur HTTPS', description: 'Certificat SSL faible SHA-1' }
+                ];
+                
+                auditData.vulnerabilities.results.push(...comprehensiveVulns);
+                updateVulnCounters();
+                
+                hideLoading();
+                alert(`✅ Scan complet terminé ! ${comprehensiveVulns.length} vulnérabilités identifiées.`);
+            }, 6000);
+        }
+
+        function updateVulnCounters() {
+            const vulns = auditData.vulnerabilities.results;
+            const critical = vulns.filter(v => v.severity === 'Critique').length;
+            const high = vulns.filter(v => v.severity === 'Élevé').length;
+            const medium = vulns.filter(v => v.severity === 'Moyen').length;
+            const low = vulns.filter(v => v.severity === 'Faible').length;
+            
+            document.getElementById('criticalVulns').textContent = critical;
+            document.getElementById('highVulns').textContent = high;
+            document.getElementById('mediumVulns').textContent = medium;
+            document.getElementById('lowVulns').textContent = low;
+            
+            document.getElementById('vulnerabilitiesFound').textContent = vulns.length;
+        }
+
+        // Interview functions
+        function startInterview(interviewId) {
+            const interviewForm = document.getElementById('interviewForm');
+            const intervieweeInput = document.getElementById('interviewee');
+            
+            const interviewees = [
+                '',
+                'DG + DSI (M. Boureima BANCE)',
+                'DAI + DFC (M. Daouda BELEMBIRE)'
+            ];
+            
+            intervieweeInput.value = interviewees[interviewId];
+            interviewForm.style.display = 'block';
+            
+            document.getElementById('interviewDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function saveInterview() {
+            if (!hasPermission('edit')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour sauvegarder les entretiens.');
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                const interview = {
+                    id: auditData.interviews.length + 1,
+                    interviewee: document.getElementById('interviewee').value,
+                    date: document.getElementById('interviewDate').value,
+                    keyPoints: document.getElementById('keyPoints').value
+                };
+                
+                auditData.interviews.push(interview);
+                document.getElementById('completedInterviews').textContent = `${auditData.interviews.length}/9`;
+                
+                document.getElementById('interviewForm').style.display = 'none';
+                clearInterviewForm();
+                
+                updateProgress(12);
+                hideLoading();
+                alert('✅ Entretien sauvegardé avec succès !');
+            }, 1500);
+        }
+
+        function cancelInterview() {
+            document.getElementById('interviewForm').style.display = 'none';
+            clearInterviewForm();
+        }
+
+        function clearInterviewForm() {
+            document.getElementById('keyPoints').value = '';
+        }
+
+        // Report generation functions
+        function generateReport(type) {
+            showLoading();
+            
+            setTimeout(() => {
+                let reportContent = '';
+                
+                switch(type) {
+                    case 'inventory':
+                        reportContent = generateInventoryReport();
+                        break;
+                    case 'infrastructure':
+                        reportContent = generateInfrastructureReport();
+                        break;
+                    case 'mapping':
+                        reportContent = generateMappingReport();
+                        break;
+                    case 'final':
+                        reportContent = generateFinalReport();
+                        break;
+                }
+                
+                document.getElementById('reportPreview').innerHTML = reportContent;
+                hideLoading();
+            }, 2000);
+        }
+
+        function generateInventoryReport() {
+            const inventory = auditData.inventory;
+            return `
+                <h4>📋 Rapport d'Inventaire - ABI</h4>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                
+                <h5>Synthèse du parc informatique :</h5>
+                <ul>
+                    <li>Ordinateurs de bureau : ${inventory.desktops || 0}</li>
+                    <li>Ordinateurs portables : ${inventory.laptops || 0}</li>
+                    <li>Tablettes : ${inventory.tablets || 0}</li>
+                    <li>Imprimantes : ${inventory.printers || 0}</li>
+                    <li><strong>Total équipements : ${inventory.total || 0}</strong></li>
+                </ul>
+            `;
+        }
+
+        function generateInfrastructureReport() {
+            return `
+                <h4>🏗️ Rapport d'Infrastructure - ABI</h4>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                
+                <h5>État de l'infrastructure :</h5>
+                <p>Analyse en cours de l'alimentation électrique et des équipements réseau.</p>
+            `;
+        }
+
+        function generateMappingReport() {
+            const devices = auditData.mapping.networkDevices.length;
+            return `
+                <h4>🗺️ Rapport de Cartographie - ABI</h4>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                
+                <h5>Découverte réseau :</h5>
+                <ul>
+                    <li>Équipements réseau découverts : ${devices}</li>
+                    <li>Plages analysées : 192.168.1.0/24</li>
+                </ul>
+            `;
+        }
+
+        function generateFinalReport() {
+            const totalDevices = auditData.inventory.total || 0;
+            const networkDevices = auditData.mapping.networkDevices.length;
+            const vulnerabilities = auditData.vulnerabilities.results.length;
+            const interviews = auditData.interviews.length;
+            
+            return `
+                <h4>📄 RAPPORT FINAL D'AUDIT - ABI</h4>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                
+                <h5>🎯 RÉSUMÉ EXÉCUTIF</h5>
+                <p>L'audit du système informatique de l'ABI révèle un environnement IT nécessitant des améliorations ciblées.</p>
+                
+                <h5>📊 SYNTHÈSE</h5>
+                <ul>
+                    <li><strong>Inventaire :</strong> ${totalDevices} équipements utilisateurs</li>
+                    <li><strong>Réseau :</strong> ${networkDevices} équipements réseau cartographiés</li>
+                    <li><strong>Sécurité :</strong> ${vulnerabilities} vulnérabilité(s) identifiée(s)</li>
+                    <li><strong>Entretiens :</strong> ${interviews}/9 directions consultées</li>
+                </ul>
+            `;
+        }
+
+        // User management functions
+        function addNewUser() {
+            if (!hasPermission('admin')) {
+                alert('⚠️ Seuls les administrateurs peuvent créer des utilisateurs.');
+                return;
+            }
+
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            const role = document.getElementById('newUserRole').value;
+            const org = document.getElementById('newUserOrg').value;
+
+            if (!name || !email || !role || !org) {
+                alert('⚠️ Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+
+            if (auditData.users.find(u => u.email === email)) {
+                alert('⚠️ Cette adresse email est déjà utilisée.');
+                return;
+            }
+
+            const newUser = {
+                id: auditData.users.length + 1,
+                name: name,
+                email: email,
+                role: role,
+                organization: org,
+                permissions: ['view'],
+                status: 'pending'
+            };
+
+            auditData.users.push(newUser);
+            clearUserForm();
+            
+            alert(`✅ Utilisateur ${name} créé avec succès !`);
+        }
+
+        function clearUserForm() {
+            document.getElementById('newUserName').value = '';
+            document.getElementById('newUserEmail').value = '';
+            document.getElementById('newUserRole').value = '';
+            document.getElementById('newUserOrg').value = '';
+        }
+
+        function editUser(userId) {
+            if (!hasPermission('admin')) {
+                alert('⚠️ Seuls les administrateurs peuvent modifier les utilisateurs.');
+                return;
+            }
+            
+            const user = auditData.users.find(u => u.id == userId);
+            if (user) {
+                alert(`✏️ Edition de l'utilisateur : ${user.name}`);
+            }
+        }
+
+        function showUserMenu() {
+            const modal = document.getElementById('loadingModal');
+            modal.style.display = 'block';
+            modal.querySelector('.modal-content').innerHTML = `
+                <h3>👤 Mon Compte</h3>
+                <div style="margin: 20px 0;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem; margin-bottom: 10px;">LN</div>
+                        <h4>${auditData.currentUser.name}</h4>
+                        <p style="color: #7f8c8d;">Chef de Mission E-DEFENCE</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="hideLoading()">❌ Fermer</button>
+                </div>
+            `;
+        }
+
+        // Save functions
+        function saveInventoryData() {
+            if (!hasPermission('edit')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour modifier les données.');
+                return;
+            }
+            
+            showLoading();
+            setTimeout(() => {
+                updateProgress(5);
+                hideLoading();
+                alert('✅ Données d\'inventaire sauvegardées !');
+            }, 1500);
+        }
+
+        function saveInfrastructureData() {
+            if (!hasPermission('edit')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour modifier les données.');
+                return;
+            }
+            
+            showLoading();
+            setTimeout(() => {
+                updateProgress(10);
+                hideLoading();
+                alert('✅ Données d\'infrastructure sauvegardées !');
+            }, 1500);
+        }
+
+        function saveSecurityData() {
+            if (!hasPermission('edit')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour modifier les données.');
+                return;
+            }
+            
+            showLoading();
+            setTimeout(() => {
+                updateProgress(8);
+                hideLoading();
+                alert('✅ Données de sécurité sauvegardées !');
+            }, 1500);
+        }
+
+        function saveMappingData() {
+            if (!hasPermission('edit')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour modifier les données.');
+                return;
+            }
+            
+            showLoading();
+            setTimeout(() => {
+                updateProgress(15);
+                hideLoading();
+                alert('✅ Cartographie réseau sauvegardée !');
+            }, 1500);
+        }
+
+        function saveVulnData() {
+            if (!hasPermission('edit')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour modifier les données.');
+                return;
+            }
+            
+            showLoading();
+            setTimeout(() => {
+                updateProgress(20);
+                hideLoading();
+                alert('✅ Résultats de vulnérabilités sauvegardés !');
+            }, 1500);
+        }
+
+        // Export functions
+        function exportInventory() {
+            if (!hasPermission('export')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour exporter les données.');
+                return;
+            }
+            alert('📤 Export inventaire (Excel) en cours...');
+        }
+
+        function exportInfrastructure() {
+            if (!hasPermission('export')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour exporter les données.');
+                return;
+            }
+            alert('📤 Export infrastructure (PDF) en cours...');
+        }
+
+        function exportSecurity() {
+            if (!hasPermission('export')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour exporter les données.');
+                return;
+            }
+            alert('📤 Export sécurité (PDF) en cours...');
+        }
+
+        function exportMapping() {
+            if (!hasPermission('export')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour exporter les données.');
+                return;
+            }
+            alert('📤 Export cartographie (Visio/PDF) en cours...');
+        }
+
+        function exportVulnReport() {
+            if (!hasPermission('export')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour exporter les données.');
+                return;
+            }
+            alert('📤 Export rapport vulnérabilités (PDF) en cours...');
+        }
+
+        function exportReport(format) {
+            if (!hasPermission('export')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour exporter les rapports.');
+                return;
+            }
+            
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                alert(`📄 Rapport exporté au format ${format.toUpperCase()} !`);
+            }, 2000);
+        }
+
+        function sendReport() {
+            if (!hasPermission('export')) {
+                alert('⚠️ Vous n\'avez pas les permissions pour envoyer les rapports.');
+                return;
+            }
+            alert('📧 Rapport envoyé aux parties prenantes ABI !');
+        }
+
+        function exportScanResults() {
+            hideLoading();
+            alert('📤 Résultats de scan exportés !');
+        }
+
+        function generateTopology() {
+            if (auditData.mapping.networkDevices.length === 0) {
+                alert('⚠️ Veuillez d\'abord effectuer la découverte du réseau');
+                return;
+            }
+            alert('🎯 Génération de la topologie réseau complète...');
+        }
+
+        // Utility functions
+        function updateProgress(increment) {
+            auditData.progress.percentage = Math.min(100, auditData.progress.percentage + increment);
+            auditData.progress.completedTasks++;
+            
+            document.getElementById('globalProgress').style.width = auditData.progress.percentage + '%';
+            document.getElementById('progressText').textContent = auditData.progress.percentage + '%';
+            
+            if (auditData.progress.percentage >= 30 && auditData.progress.currentPhase === 1) {
+                auditData.progress.currentPhase = 2;
+                document.getElementById('currentPhase').textContent = 'Entretiens avec les directions';
+                updateTimeline();
+            }
+        }
+
+        function updateTimeline() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.className = 'timeline-item';
+                if (index < auditData.progress.currentPhase - 1) {
+                    item.classList.add('completed');
+                } else if (index === auditData.progress.currentPhase - 1) {
+                    item.classList.add('current');
+                } else {
+                    item.classList.add('pending');
+                }
+            });
+        }
+
+        function showLoading() {
+            document.getElementById('loadingModal').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingModal').style.display = 'none';
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('siteName').value = 'ABI - Siège social';
+            document.getElementById('siteCity').value = 'Ouagadougou';
+            document.getElementById('focalPoint').value = 'M. Boureima BANCE';
+            document.getElementById('focalFunction').value = 'Directeur des Systèmes d\'Information';
+            
+            updateTimeline();
+            
+            auditData.progress.percentage = 15;
+            document.getElementById('globalProgress').style.width = '15%';
+            
+            console.log('🚀 E-DEFENCE Audit Platform initialisée');
+            console.log('✅ Système de permissions activé');
+            console.log('👤 Utilisateur connecté:', auditData.currentUser.name);
+        });
+
+        // Auto-save functionality
+        setInterval(() => {
+            if (Object.keys(auditData.inventory).length > 0 || 
+                auditData.mapping.networkDevices.length > 0 || 
+                auditData.interviews.length > 0) {
+                console.log('💾 Sauvegarde automatique effectuée');
+            }
+        }, 300000);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-DEFENCE Audit Platform - Mission ABI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 15%;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 10px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.8rem;
+            min-width: 120px;
+            margin: 2px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: rgba(249, 249, 249, 0.7);
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .form-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            padding: 12px 15px;
+            border: 2px solid rgba(52, 73, 94, 0.1);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            transform: scale(1.2);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(52, 73, 94, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card h3 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dashboard-card p {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+
+        .dashboard-card small {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(249, 249, 249, 0.7);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .timeline-item.completed {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid #2ecc71;
+        }
+
+        .timeline-item.current {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #3498db;
+        }
+
+        .timeline-item.pending {
+            background: rgba(149, 165, 166, 0.1);
+            border-left: 4px solid #95a5a6;
+        }
+
+        .phase-details {
+            flex: 1;
+        }
+
+        .phase-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .phase-duration {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .report-preview {
+            background: rgba(249, 249, 249, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .inventory-table th,
+        .inventory-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(52, 73, 94, 0.1);
+        }
+
+        .inventory-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .inventory-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-excellent { background: rgba(46, 204, 113, 0.2); color: #27ae60; }
+        .status-good { background: rgba(52, 152, 219, 0.2); color: #2980b9; }
+        .status-average { background: rgba(241, 196, 15, 0.2); color: #f39c12; }
+        .status-poor { background: rgba(231, 76, 60, 0.2); color: #c0392b; }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-info {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: #3498db;
+            color: #2980b9;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.1);
+            border-color: #2ecc71;
+            color: #27ae60;
+        }
+
+        .alert-warning {
+            background: rgba(241, 196, 15, 0.1);
+            border-color: #f1c40f;
+            color: #f39c12;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h1>🔍 E-DEFENCE Audit Platform</h1>
+                    <p class="subtitle">Mission d'audit informatique - Agence Burkinabè des Investissements (ABI)</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="background: rgba(102, 126, 234, 0.1); padding: 10px 15px; border-radius: 10px; margin-bottom: 10px;">
+                        <div style="font-weight: 600; color: #2c3e50;" id="currentUserName">Lassané NACOULMA</div>
+                        <div style="font-size: 0.9rem; color: #7f8c8d;" id="currentUserRole">Administrateur - Chef de Mission</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="showUserMenu()" style="padding: 8px 15px; font-size: 0.9rem;">⚙️ Mon compte</button>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="globalProgress"></div>
+            </div>
+            <p><strong>Mission :</strong> 30 jours | <strong>Phase actuelle :</strong> <span id="currentPhase">Inventaire et collecte initiale</span> | <strong>Progression :</strong> <span id="progressText">15%</span></p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard', this)">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showTab('inventory', this)">📋 Inventaire</button>
+            <button class="nav-tab" onclick="showTab('infrastructure', this)">🏗️ Infrastructure</button>
+            <button class="nav-tab" onclick="showTab('mapping', this)">🗺️ Cartographie</button>
+            <button class="nav-tab" onclick="showTab('vulnerabilities', this)">🔍 Scan Vulns</button>
+            <button class="nav-tab" onclick="showTab('security', this)">🔒 Sécurité</button>
+            <button class="nav-tab" onclick="showTab('interviews', this)">👥 Entretiens</button>
+            <button class="nav-tab" onclick="showTab('reports', this)">📄 Rapports</button>
+            <button class="nav-tab" onclick="showTab('users', this)">👤 Utilisateurs</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3 id="totalDevices">0</h3>
+                    <p>Équipements inventoriés</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3 id="completedInterviews">0/9</h3>
+                    <p>Entretiens réalisés</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3 id="vulnerabilitiesFound">0</h3>
+                    <p>Vulnérabilités identifiées</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3 id="networkDevicesFound">0</h3>
+                    <p>Équipements réseau cartographiés</p>
+                </div>
+            </div>
+
+            <h3>📅 Planning de la mission</h3>
+            <div class="timeline" id="timeline">
+                <div class="timeline-item current">
+                    <div class="phase-details">
+                        <div class="phase-title">Phase 1 : Inventaire et collecte initiale</div>
+                        <div class="phase-duration">3 jours - En cours</div>
+                    </div>
+                </div>
+                <div class="timeline-item pending">
+                    <div class="phase-details">
+                        <div class="phase-title">Phase 2 : Entretiens avec les directions</div>
+                        <div class="phase-duration">6 jours - À venir</div>
+                    </div>
+                </div>
+                <div class="timeline-item pending">
+                    <div class="phase-details">
+                        <div class="phase-title">Phase 3 : Tests et analyses techniques</div>
+                        <div class="phase-duration">5 jours - À venir</div>
+                    </div>
+                </div>
+                <div class="timeline-item pending">
+                    <div class="phase-details">
+                        <div class="phase-title">Phase 4 : Analyse et recommandations</div>
+                        <div class="phase-duration">4 jours - À venir</div>
+                    </div>
+                </div>
+                <div class="timeline-item pending">
+                    <div class="phase-details">
+                        <div class="phase-title">Phase 5 : Validation et présentation</div>
+                        <div class="phase-duration">2 jours - À venir</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="inventory" class="tab-content">
+            <div class="form-section">
+                <h3>🏢 Identification du site</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nom du site</label>
+                        <input type="text" id="siteName" placeholder="ABI - Siège social">
+                    </div>
+                    <div class="form-group">
+                        <label>Ville/Commune</label>
+                        <input type="text" id="siteCity" placeholder="Ouagadougou">
+                    </div>
+                    <div class="form-group">
+                        <label>Point focal</label>
+                        <input type="text" id="focalPoint" placeholder="M. Boureima BANCE">
+                    </div>
+                    <div class="form-group">
+                        <label>Fonction</label>
+                        <input type="text" id="focalFunction" placeholder="Directeur des Systèmes d'Information">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>💻 Parc informatique</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Ordinateurs de bureau</label>
+                        <input type="number" id="desktops" placeholder="0" onchange="updateInventory()">
+                    </div>
+                    <div class="form-group">
+                        <label>Ordinateurs portables</label>
+                        <input type="number" id="laptops" placeholder="0" onchange="updateInventory()">
+                    </div>
+                    <div class="form-group">
+                        <label>Tablettes</label>
+                        <input type="number" id="tablets" placeholder="0" onchange="updateInventory()">
+                    </div>
+                    <div class="form-group">
+                        <label>Imprimantes réseau</label>
+                        <input type="number" id="printers" placeholder="0" onchange="updateInventory()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="saveInventoryData()">💾 Sauvegarder</button>
+                <button class="btn btn-secondary" onclick="exportInventory()">📤 Exporter</button>
+            </div>
+        </div>
+
+        <!-- Infrastructure Tab -->
+        <div id="infrastructure" class="tab-content">
+            <div class="form-section">
+                <h3>⚡ Alimentation électrique</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Source principale</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="sonabel">
+                                <label for="sonabel">SONABEL</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="groupesPrives">
+                                <label for="groupesPrives">Groupes privés</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="solaire">
+                                <label for="solaire">Solaire</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hybride">
+                                <label for="hybride">Hybride</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Qualité de l'alimentation</label>
+                        <select id="powerQuality">
+                            <option value="">Sélectionner...</option>
+                            <option value="stable">Stable</option>
+                            <option value="coupures">Coupures fréquentes</option>
+                            <option value="variations">Variations de tension</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="saveInfrastructureData()">💾 Sauvegarder</button>
+                <button class="btn btn-secondary" onclick="exportInfrastructure()">📤 Exporter</button>
+            </div>
+        </div>
+
+        <!-- Mapping Tab -->
+        <div id="mapping" class="tab-content">
+            <div class="form-section">
+                <h3>🗺️ Cartographie du réseau</h3>
+                <div class="alert alert-info">
+                    <strong>ℹ️ Objectif :</strong> Documenter l'architecture réseau complète de l'ABI pour identifier la topologie, les interconnexions et les points de défaillance potentiels.
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>🔧 Outils de cartographie</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" onclick="startNetworkScan()">
+                        <h3>📡</h3>
+                        <p>Scan automatique du réseau</p>
+                        <small>Découverte des équipements actifs</small>
+                    </div>
+                    <div class="dashboard-card" onclick="launchNmap()">
+                        <h3>🎯</h3>
+                        <p>Nmap Scanner</p>
+                        <small>Scan de ports et services</small>
+                    </div>
+                    <div class="dashboard-card" onclick="generateTopology()">
+                        <h3>🎯</h3>
+                        <p>Génerer schéma</p>
+                        <small>Topologie complète</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>📊 Résultats de découverte réseau</h3>
+                <table class="inventory-table" id="networkDevicesTable">
+                    <thead>
+                        <tr>
+                            <th>Adresse IP</th>
+                            <th>Type</th>
+                            <th>Fabricant</th>
+                            <th>Services</th>
+                            <th>État</th>
+                        </tr>
+                    </thead>
+                    <tbody id="networkDevicesList">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #7f8c8d;">
+                                <em>Aucun équipement découvert. Lancez un scan de réseau.</em>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="saveMappingData()">💾 Sauvegarder cartographie</button>
+                <button class="btn btn-secondary" onclick="exportMapping()">📤 Exporter schémas</button>
+            </div>
+        </div>
+
+        <!-- Vulnerabilities Tab -->
+        <div id="vulnerabilities" class="tab-content">
+            <div class="form-section">
+                <h3>🔍 Scanner de vulnérabilités</h3>
+                <div class="alert alert-warning">
+                    <strong>⚠️ Phase 3 :</strong> Module actif à partir du jour J10 (Tests et analyses techniques)
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>🎯 Types de scans disponibles</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" onclick="startVulnScan('network')">
+                        <h3>🌐</h3>
+                        <p>Scan réseau</p>
+                        <small>Ports ouverts, services exposés</small>
+                    </div>
+                    <div class="dashboard-card" onclick="launchNessus()">
+                        <h3>🛡️</h3>
+                        <p>Nessus Scanner</p>
+                        <small>Scan professionnel vulnérabilités</small>
+                    </div>
+                    <div class="dashboard-card" onclick="startVulnScan('web')">
+                        <h3>🌍</h3>
+                        <p>OWASP ZAP</p>
+                        <small>Scan applications web</small>
+                    </div>
+                    <div class="dashboard-card" onclick="executeVulnScan()">
+                        <h3>⚡</h3>
+                        <p>Scan complet</p>
+                        <small>Audit global</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>📊 Résultats des scans</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3 id="criticalVulns" style="color: #e74c3c;">0</h3>
+                        <p>Vulnérabilités critiques</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 id="highVulns" style="color: #f39c12;">0</h3>
+                        <p>Vulnérabilités élevées</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 id="mediumVulns" style="color: #f1c40f;">0</h3>
+                        <p>Vulnérabilités moyennes</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 id="lowVulns" style="color: #2ecc71;">0</h3>
+                        <p>Vulnérabilités faibles</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="saveVulnData()">💾 Sauvegarder résultats</button>
+                <button class="btn btn-secondary" onclick="exportVulnReport()">📤 Export rapport vuln

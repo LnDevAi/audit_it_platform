@@ -1,0 +1,895 @@
+{
+	"info": {
+		"_postman_id": "e-defence-audit-platform",
+		"name": "E-DEFENCE Audit Platform API",
+		"description": "Collection complète pour tester l'API de la plateforme E-DEFENCE Audit Platform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentification",
+			"item": [
+				{
+					"name": "Inscription Utilisateur",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\",\n  \"firstName\": \"{{test_firstName}}\",\n  \"lastName\": \"{{test_lastName}}\",\n  \"organizationName\": \"{{test_organizationName}}\",\n  \"phone\": \"{{test_phone}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Inscription d'un nouvel utilisateur avec création automatique d'organisation"
+					},
+					"response": []
+				},
+				{
+					"name": "Connexion Utilisateur",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('access_token', response.accessToken);",
+									"    pm.environment.set('refresh_token', response.refreshToken);",
+									"    pm.environment.set('user_id', response.user.id);",
+									"    pm.environment.set('organization_id', response.user.organizationId);",
+									"    console.log('Token sauvegardé:', response.accessToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Connexion utilisateur et récupération des tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Rafraîchir Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Rafraîchir le token d'accès"
+					},
+					"response": []
+				},
+				{
+					"name": "Déconnexion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Déconnexion utilisateur"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints d'authentification et gestion des utilisateurs"
+		},
+		{
+			"name": "👥 Gestion des Utilisateurs",
+			"item": [
+				{
+					"name": "Obtenir Profil Utilisateur",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						},
+						"description": "Récupérer le profil de l'utilisateur connecté"
+					},
+					"response": []
+				},
+				{
+					"name": "Mettre à Jour Profil",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{updated_firstName}}\",\n  \"lastName\": \"{{updated_lastName}}\",\n  \"phone\": \"{{updated_phone}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						},
+						"description": "Mettre à jour le profil utilisateur"
+					},
+					"response": []
+				},
+				{
+					"name": "Changer Mot de Passe",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"{{current_password}}\",\n  \"newPassword\": \"{{new_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/change-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"change-password"
+							]
+						},
+						"description": "Changer le mot de passe de l'utilisateur"
+					},
+					"response": []
+				},
+				{
+					"name": "Lister Utilisateurs (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Lister les utilisateurs de l'organisation (Admin uniquement)"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestion des profils utilisateurs et des comptes"
+		},
+		{
+			"name": "🏢 Gestion des Organisations",
+			"item": [
+				{
+					"name": "Obtenir Détails Organisation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/organizations/{{organization_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"organizations",
+								"{{organization_id}}"
+							]
+						},
+						"description": "Récupérer les détails de l'organisation"
+					},
+					"response": []
+				},
+				{
+					"name": "Mettre à Jour Organisation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{updated_organization_name}}\",\n  \"address\": \"{{updated_organization_address}}\",\n  \"phone\": \"{{updated_organization_phone}}\",\n  \"email\": \"{{updated_organization_email}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/organizations/{{organization_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"organizations",
+								"{{organization_id}}"
+							]
+						},
+						"description": "Mettre à jour les informations de l'organisation"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtenir Statistiques Organisation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/organizations/{{organization_id}}/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"organizations",
+								"{{organization_id}}",
+								"stats"
+							]
+						},
+						"description": "Récupérer les statistiques de l'organisation"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestion des organisations et de leurs informations"
+		},
+		{
+			"name": "📋 Missions d'Audit",
+			"item": [
+				{
+					"name": "Créer Mission d'Audit",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"{{audit_title}}\",\n  \"description\": \"{{audit_description}}\",\n  \"startDate\": \"{{audit_start_date}}\",\n  \"endDate\": \"{{audit_end_date}}\",\n  \"scope\": \"{{audit_scope}}\",\n  \"objectives\": [\"{{audit_objective_1}}\", \"{{audit_objective_2}}\"],\n  \"auditors\": [\"{{auditor_email_1}}\", \"{{auditor_email_2}}\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/audit-missions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"audit-missions"
+							]
+						},
+						"description": "Créer une nouvelle mission d'audit"
+					},
+					"response": []
+				},
+				{
+					"name": "Lister Missions d'Audit",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/audit-missions?page=1&limit=10&status={{audit_status}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"audit-missions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "{{audit_status}}"
+								}
+							]
+						},
+						"description": "Lister les missions d'audit avec filtres"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtenir Mission d'Audit",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/audit-missions/{{audit_mission_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"audit-missions",
+								"{{audit_mission_id}}"
+							]
+						},
+						"description": "Récupérer les détails d'une mission d'audit"
+					},
+					"response": []
+				},
+				{
+					"name": "Mettre à Jour Mission d'Audit",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"{{updated_audit_title}}\",\n  \"description\": \"{{updated_audit_description}}\",\n  \"status\": \"{{updated_audit_status}}\",\n  \"progress\": {{updated_audit_progress}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/audit-missions/{{audit_mission_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"audit-missions",
+								"{{audit_mission_id}}"
+							]
+						},
+						"description": "Mettre à jour une mission d'audit"
+					},
+					"response": []
+				},
+				{
+					"name": "Supprimer Mission d'Audit",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/audit-missions/{{audit_mission_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"audit-missions",
+								"{{audit_mission_id}}"
+							]
+						},
+						"description": "Supprimer une mission d'audit"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestion complète des missions d'audit"
+		},
+		{
+			"name": "📊 Rapports et Export",
+			"item": [
+				{
+					"name": "Générer Rapport PDF",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"auditMissionId\": \"{{audit_mission_id}}\",\n  \"format\": \"pdf\",\n  \"includeCharts\": true,\n  \"includeRecommendations\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reports/generate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"generate"
+							]
+						},
+						"description": "Générer un rapport PDF d'audit"
+					},
+					"response": []
+				},
+				{
+					"name": "Exporter Données Excel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dataType\": \"audit_missions\",\n  \"format\": \"excel\",\n  \"filters\": {\n    \"startDate\": \"{{export_start_date}}\",\n    \"endDate\": \"{{export_end_date}}\",\n    \"status\": \"{{export_status}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/exports/generate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"exports",
+								"generate"
+							]
+						},
+						"description": "Exporter les données en format Excel"
+					},
+					"response": []
+				},
+				{
+					"name": "Télécharger Fichier",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/files/download/{{file_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files",
+								"download",
+								"{{file_id}}"
+							]
+						},
+						"description": "Télécharger un fichier généré"
+					},
+					"response": []
+				}
+			],
+			"description": "Génération de rapports et export de données"
+		},
+		{
+			"name": "📈 Monitoring et Métriques",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Vérifier l'état de santé de l'API"
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check Détaillé",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/detailed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health",
+								"detailed"
+							]
+						},
+						"description": "Vérifier l'état détaillé de tous les services"
+					},
+					"response": []
+				},
+				{
+					"name": "Métriques Prometheus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/metrics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"metrics"
+							]
+						},
+						"description": "Récupérer les métriques Prometheus"
+					},
+					"response": []
+				},
+				{
+					"name": "Statistiques d'Utilisation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/stats/usage",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"stats",
+								"usage"
+							]
+						},
+						"description": "Récupérer les statistiques d'utilisation"
+					},
+					"response": []
+				}
+			],
+			"description": "Monitoring et métriques de l'application"
+		},
+		{
+			"name": "🔧 Administration",
+			"item": [
+				{
+					"name": "Obtenir Configuration Système",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/config",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"config"
+							]
+						},
+						"description": "Récupérer la configuration système (Admin uniquement)"
+					},
+					"response": []
+				},
+				{
+					"name": "Nettoyer Cache",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/cache/clear",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"cache",
+								"clear"
+							]
+						},
+						"description": "Nettoyer le cache Redis (Admin uniquement)"
+					},
+					"response": []
+				},
+				{
+					"name": "Optimiser Base de Données",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/database/optimize",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"database",
+								"optimize"
+							]
+						},
+						"description": "Optimiser la base de données (Admin uniquement)"
+					},
+					"response": []
+				}
+			],
+			"description": "Fonctions d'administration système"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script de pré-requête global",
+					"console.log('Exécution de la requête:', pm.request.name);",
+					"",
+					"// Vérifier si le token est expiré",
+					"const token = pm.environment.get('access_token');",
+					"if (token) {",
+					"    try {",
+					"        const payload = JSON.parse(atob(token.split('.')[1]));",
+					"        const expiration = payload.exp * 1000;",
+					"        if (Date.now() >= expiration) {",
+					"            console.log('Token expiré, rafraîchissement nécessaire');",
+					"        }",
+					"    } catch (e) {",
+					"        console.log('Erreur lors de la vérification du token');",
+					"    }",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script de test global",
+					"pm.test('Status code is 200 or 201', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"});",
+					"",
+					"pm.test('Response time is less than 2000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"pm.test('Response has required headers', function () {",
+					"    pm.expect(pm.response.headers).to.have.property('content-type');",
+					"    pm.expect(pm.response.headers).to.have.property('cache-control');",
+					"});",
+					"",
+					"// Tests spécifiques selon le type de requête",
+					"if (pm.request.method === 'POST') {",
+					"    pm.test('POST request returns created resource', function () {",
+					"        const response = pm.response.json();",
+					"        pm.expect(response).to.have.property('id');",
+					"    });",
+					"}",
+					"",
+					"if (pm.request.method === 'GET') {",
+					"    pm.test('GET request returns data', function () {",
+					"        const response = pm.response.json();",
+					"        pm.expect(response).to.not.be.null;",
+					"    });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "test_email",
+			"value": "test@e-defence.bf",
+			"type": "string"
+		},
+		{
+			"key": "test_password",
+			"value": "TestPassword123!",
+			"type": "string"
+		},
+		{
+			"key": "test_firstName",
+			"value": "John",
+			"type": "string"
+		},
+		{
+			"key": "test_lastName",
+			"value": "Doe",
+			"type": "string"
+		},
+		{
+			"key": "test_organizationName",
+			"value": "Test Organization",
+			"type": "string"
+		},
+		{
+			"key": "test_phone",
+			"value": "+22670123456",
+			"type": "string"
+		}
+	]
+}
+
+

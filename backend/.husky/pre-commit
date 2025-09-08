@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Exécution des vérifications de qualité..."
+
+# Linting
+echo "📝 Vérification du style de code..."
+npm run lint
+
+# Formatage
+echo "🎨 Vérification du formatage..."
+npm run format:check
+
+# Tests
+echo "🧪 Exécution des tests..."
+npm run test:ci
+
+echo "✅ Toutes les vérifications ont réussi !"
+
+

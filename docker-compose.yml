@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # Base de données MySQL
+  database:
+    image: mysql:8.0
+    container_name: audit_platform_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-audit_root_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-audit_platform_saas}
+      MYSQL_USER: ${MYSQL_USER:-audit_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-audit_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - audit_network
+
+  # Cache Redis
+  redis:
+    image: redis:7-alpine
+    container_name: audit_platform_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - audit_network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: audit_platform_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: ${MYSQL_USER:-audit_user}
+      PMA_PASSWORD: ${MYSQL_PASSWORD:-audit_password}
+    ports:
+      - "8081:80"
+    depends_on:
+      - database
+    networks:
+      - audit_network
+
+  # Backend API
+  backend:
+    build: ./backend
+    container_name: audit_platform_backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-audit_platform_saas}
+      DB_USER: ${MYSQL_USER:-audit_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-audit_password}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      JWT_SECRET: ${JWT_SECRET:-your_super_secret_jwt_key_change_in_production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+      PORT: 5000
+      NODE_ENV: ${NODE_ENV:-production}
+      ENABLE_METRICS: ${ENABLE_METRICS:-true}
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - audit_network
+
+  # Frontend React
+  frontend:
+    build: ./frontend
+    container_name: audit_platform_frontend
+    restart: unless-stopped
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - audit_network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  audit_network:
+    driver: bridge

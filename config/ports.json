@@ -1,0 +1,8 @@
+{
+  "database": 3306,
+  "redis": 6379,
+  "phpmyadmin": 8081,
+  "backend": 5000,
+  "frontend": 3000,
+  "metrics": 9090
+}
