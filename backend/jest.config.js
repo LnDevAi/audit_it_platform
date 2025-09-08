@@ -49,9 +49,6 @@ module.exports = {
   // Verbosité
   verbose: true,
   
-  // Couleurs
-  colors: true,
-  
   // Rapport de couverture
   coverageReporters: [
     'text',
@@ -65,8 +62,8 @@ module.exports = {
   // Extensions
   moduleFileExtensions: ['js', 'json'],
   
-  // Mock des modules
-  moduleNameMapping: {
+  // Alias modules (clé correcte)
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1'
   },
   
@@ -76,8 +73,7 @@ module.exports = {
   // Restauration automatique
   restoreMocks: true,
   
-  // Isolation des tests
-  testIsolation: true
+  // Isolation des tests (option non supportée retirée)
 };
 
 

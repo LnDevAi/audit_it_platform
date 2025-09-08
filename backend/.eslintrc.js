@@ -17,6 +17,7 @@ module.exports = {
     'import',
     'node',
     'promise',
+    'jest',
   ],
   rules: {
     // Règles de base

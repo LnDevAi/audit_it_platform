@@ -83,7 +83,6 @@ if (useSQLite) {
         underscored: false,
         freezeTableName: true,
         // Optimisations pour les performances
-        indexes: true,
         paranoid: false // Désactiver soft deletes par défaut pour les performances
       }
     }
