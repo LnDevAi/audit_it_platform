@@ -1,5 +1,6 @@
 const promClient = require('prom-client');
 const { logger } = require('./logger');
+const { sequelize } = require('../models');
 
 // Configuration des métriques Prometheus
 const register = new promClient.Registry();
