@@ -64,5 +64,13 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: 'updated_at'
   });
 
+  // Associations
+  InventoryItem.associate = (models) => {
+    InventoryItem.belongsTo(models.AuditSite, {
+      foreignKey: 'site_id',
+      as: 'site'
+    });
+  };
+
   return InventoryItem;
 };

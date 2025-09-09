@@ -57,5 +57,13 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   });
 
+  // Associations
+  Report.associate = (models) => {
+    Report.belongsTo(models.AuditMission, {
+      foreignKey: 'mission_id',
+      as: 'mission'
+    });
+  };
+
   return Report;
 };

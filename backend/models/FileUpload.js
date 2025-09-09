@@ -64,5 +64,17 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: false
   });
 
+  // Associations
+  FileUpload.associate = (models) => {
+    FileUpload.belongsTo(models.AuditMission, {
+      foreignKey: 'mission_id',
+      as: 'mission'
+    });
+    FileUpload.belongsTo(models.User, {
+      foreignKey: 'uploaded_by',
+      as: 'uploader'
+    });
+  };
+
   return FileUpload;
 };
