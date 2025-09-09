@@ -21,6 +21,8 @@ import Security from './pages/Security';
 import Interviews from './pages/Interviews';
 import Reports from './pages/Reports';
 import Users from './pages/Users';
+import OidcCallback from './pages/OidcCallback';
+import Services from './pages/Services';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -122,6 +124,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
+      <Route path="/auth/callback" element={<OidcCallback />} />
       <Route path="/" element={
         <ProtectedRoute>
           <Layout>
@@ -196,6 +199,13 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <Layout>
             <Users />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/services" element={
+        <ProtectedRoute>
+          <Layout>
+            <Services />
           </Layout>
         </ProtectedRoute>
       } />

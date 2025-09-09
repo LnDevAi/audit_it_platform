@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       const token = Cookies.get('auth_token');
       if (token) {
         try {
-          const userData = await authAPI.getMe();
+          const userData = await authAPI.getCurrentUser();
           setUser(userData);
         } catch (error) {
           console.error('Auth initialization error:', error);
@@ -34,9 +34,9 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, twoFactorToken, recoveryCode) => {
     try {
-      const response = await authAPI.login(email, password);
+      const response = await authAPI.login({ email, password, twoFactorToken, recoveryCode });
       const { token, user: userData } = response;
       
       Cookies.set('auth_token', token, { expires: 1 }); // 1 day
