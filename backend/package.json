@@ -24,6 +24,7 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
     "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
     "security-check": "node ../scripts/security-check.js",
     "generate-secrets": "node ../scripts/generate-secrets.js",
     "lint": "eslint .",
