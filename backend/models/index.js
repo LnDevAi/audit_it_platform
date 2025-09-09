@@ -24,6 +24,11 @@ const FileUpload = require('./FileUpload');
 const DataImport = require('./DataImport');
 const DataExport = require('./DataExport');
 const ApiKey = require('./ApiKey');
+const ServiceOffering = require('./ServiceOffering');
+const ServiceOrder = require('./ServiceOrder');
+const ServiceTask = require('./ServiceTask');
+const Appointment = require('./Appointment');
+const ServiceReport = require('./ServiceReport');
 
 // Initialisation des modèles
 const models = {
@@ -47,7 +52,12 @@ const models = {
   FileUpload: FileUpload(sequelize, Sequelize.DataTypes),
   DataImport: DataImport(sequelize, Sequelize.DataTypes),
   DataExport: DataExport(sequelize, Sequelize.DataTypes),
-  ApiKey: ApiKey
+  ApiKey: ApiKey,
+  ServiceOffering: ServiceOffering(sequelize, Sequelize.DataTypes),
+  ServiceOrder: ServiceOrder(sequelize, Sequelize.DataTypes),
+  ServiceTask: ServiceTask(sequelize, Sequelize.DataTypes),
+  Appointment: Appointment(sequelize, Sequelize.DataTypes),
+  ServiceReport: ServiceReport(sequelize, Sequelize.DataTypes)
 };
 
 // Configuration des associations

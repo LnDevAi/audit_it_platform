@@ -114,6 +114,7 @@ app.use('/api/vulnerabilities', require('./routes/vulnerabilities'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/scans', require('./routes/scans'));
 app.use('/api/uploads', require('./routes/uploads'));
+app.use('/api/services', require('./routes/services'));
 
 // Nouvelles routes sécurisées
 app.use('/api/2fa', require('./routes/twoFactor'));

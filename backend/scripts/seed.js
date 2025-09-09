@@ -14,6 +14,11 @@ const {
   Vulnerability,
   Report,
   FileUpload,
+  ServiceOffering,
+  ServiceOrder,
+  ServiceTask,
+  Appointment,
+  ServiceReport,
 } = require('../models');
 
 async function main() {
@@ -103,6 +108,44 @@ async function main() {
       file_size: 1024,
       category: 'document',
       uploaded_by: admin.id,
+    });
+
+    // Service offerings
+    const offerings = await ServiceOffering.bulkCreate([
+      { name: 'Pentest Externe', category: 'penetration_test', price_cents: 1500000 },
+      { name: 'Hardening Serveur Linux', category: 'hardening', price_cents: 500000 },
+      { name: 'Formation Sécurité', category: 'training', price_cents: 300000 },
+    ], { returning: true });
+
+    // Service order
+    const order = await ServiceOrder.create({
+      organization_id: org.id,
+      offering_id: offerings[0].id,
+      created_by: admin.id,
+      status: 'in_progress',
+      priority: 'high',
+      requested_date: new Date(),
+      details: { scope: '10 IPs externes', methodology: 'OWASP WSTG' }
+    });
+
+    await ServiceTask.bulkCreate([
+      { service_order_id: order.id, title: 'Collecte d\'informations', status: 'done' },
+      { service_order_id: order.id, title: 'Scan de ports', status: 'doing' },
+      { service_order_id: order.id, title: 'Exploitation', status: 'todo' },
+    ]);
+
+    await Appointment.create({
+      service_order_id: order.id,
+      scheduled_at: new Date(Date.now() + 24 * 3600 * 1000),
+      duration_minutes: 60,
+      meeting_link: 'https://meet.example.com/abcdef',
+    });
+
+    await ServiceReport.create({
+      service_order_id: order.id,
+      title: 'Rapport Pentest Externe - Démo',
+      format: 'pdf',
+      generated_by: admin.id,
     });
 
     console.log('✅ Seed completed');
