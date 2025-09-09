@@ -26,9 +26,11 @@ winston.addColors(logColors);
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
+  winston.format.printf((info) => {
+    const correlation = info.correlationId || info.correlation_id || '';
+    const prefix = correlation ? `[${correlation}] ` : '';
+    return `${info.timestamp} ${info.level}: ${prefix}${info.message}`;
+  }),
 );
 
 // Format pour les fichiers (sans couleurs)

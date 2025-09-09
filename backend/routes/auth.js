@@ -5,10 +5,10 @@ const { User, Permission, ActivityLog } = require('../models');
 const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
-// Login
+// Login with optional TOTP enforcement
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, twoFactorToken, recoveryCode } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -35,6 +35,20 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({
         error: 'Identifiants invalides'
       });
+    }
+
+    // Enforce TOTP if enabled
+    if (user.two_factor_enabled) {
+      const TwoFactorService = require('../services/twoFactorService');
+      let totpOk = false;
+      if (twoFactorToken) {
+        totpOk = await TwoFactorService.verifyToken(user, twoFactorToken);
+      } else if (recoveryCode) {
+        totpOk = await TwoFactorService.verifyRecoveryCode(user, recoveryCode);
+      }
+      if (!totpOk) {
+        return res.status(401).json({ error: 'Validation 2FA requise', requires2FA: true });
+      }
     }
 
     // Update last login

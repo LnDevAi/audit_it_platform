@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const { logger, logRequest } = require('./config/logger');
+const correlationId = require('./middleware/correlationId');
 const { connect: connectRedis } = require('./config/redis');
 const { initMetrics, metricsMiddleware, metricsEndpoint } = require('./config/metrics');
 const { healthCheckMiddleware, simpleHealthCheck, detailedHealthCheck, startPeriodicHealthChecks } = require('./middleware/healthCheck');
@@ -29,6 +30,8 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware de sécurité
 app.use(helmet());
+// Correlation ID for tracing
+app.use(correlationId);
 // Optionnel: HSTS uniquement si servi derrière HTTPS
 if (process.env.ENABLE_HSTS === 'true') {
   app.use(
@@ -115,6 +118,8 @@ app.use('/api/reports', require('./routes/reports'));
 app.use('/api/scans', require('./routes/scans'));
 app.use('/api/uploads', require('./routes/uploads'));
 app.use('/api/services', require('./routes/services'));
+app.use('/api/audit-logs', require('./routes/auditLogs'));
+app.use('/api/oidc', require('./routes/oidc'));
 
 // Nouvelles routes sécurisées
 app.use('/api/2fa', require('./routes/twoFactor'));
