@@ -29,6 +29,10 @@
     "@mui/x-date-pickers": "^6.18.2",
     "dayjs": "^1.11.10"
   },
+  "devDependencies": {
+    "@stripe/stripe-js": "^2.4.0",
+    "@stripe/react-stripe-js": "^2.6.2"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

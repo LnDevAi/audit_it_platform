@@ -23,6 +23,7 @@ import Reports from './pages/Reports';
 import Users from './pages/Users';
 import OidcCallback from './pages/OidcCallback';
 import Services from './pages/Services';
+import Checkout from './pages/Checkout';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -206,6 +207,13 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <Layout>
             <Services />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/checkout" element={
+        <ProtectedRoute>
+          <Layout>
+            <Checkout />
           </Layout>
         </ProtectedRoute>
       } />
