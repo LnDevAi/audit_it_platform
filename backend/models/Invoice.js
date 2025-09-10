@@ -28,6 +28,27 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(3),
       defaultValue: 'XOF'
     },
+    service_order_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'service_orders',
+        key: 'id'
+      }
+    },
+    payment_reference: {
+      type: DataTypes.STRING(128),
+      allowNull: true,
+      unique: false
+    },
+    customer_name: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    customer_email: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     status: {
       type: DataTypes.ENUM('draft', 'sent', 'paid', 'overdue', 'cancelled'),
       defaultValue: 'draft'
