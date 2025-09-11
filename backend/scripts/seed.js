@@ -25,6 +25,9 @@ const {
   BackupConfig,
   BackupEvent,
   AntivirusStatus,
+  WifiAccessPoint,
+  WifiSurvey,
+  WifiSecurityIssue,
 } = require('../models');
 
 async function main() {
@@ -146,6 +149,19 @@ async function main() {
     await AntivirusStatus.bulkCreate([
       { inventory_item_id: invItems[0].id, vendor: 'ClamAV', product: 'ClamAV', version: '0.105', real_time_protection: true, defs_version: '2025-09-01', defs_date: new Date(Date.now() - 3 * 24 * 3600 * 1000), performance_impact: 'low' },
       { inventory_item_id: invItems[1].id, vendor: 'Windows Defender', product: 'Defender', version: '4.x', real_time_protection: true, defs_version: '1.1.23000', defs_date: new Date(Date.now() - 20 * 24 * 3600 * 1000), performance_impact: 'medium' }
+    ]);
+
+    // WiFi: APs, surveys, issues
+    const aps = await WifiAccessPoint.bulkCreate([
+      { site_id: site.id, ssid: 'ABI-Staff', band: '5GHz', channel: 44, encryption: 'WPA2-Enterprise', vendor: 'Cisco' },
+      { site_id: site.id, ssid: 'ABI-Guest', band: '2.4GHz', channel: 6, encryption: 'WPA2', vendor: 'Cisco' }
+    ], { returning: true });
+    await WifiSurvey.bulkCreate([
+      { ap_id: aps[0].id, rssi_dbm: -55, snr_db: 30, throughput_mbps: 120, packet_loss_percent: 0.2, jitter_ms: 4, location_hint: 'Open Space' },
+      { ap_id: aps[1].id, rssi_dbm: -68, snr_db: 18, throughput_mbps: 12, packet_loss_percent: 3.1, jitter_ms: 12, location_hint: 'Accueil' }
+    ]);
+    await WifiSecurityIssue.bulkCreate([
+      { ap_id: aps[1].id, type: 'weak_encryption', severity: 'medium', description: 'SSID invité en WPA2 PSK, envisager WPA3' }
     ]);
 
     // Service offerings

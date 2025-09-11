@@ -120,6 +120,7 @@ app.use('/api/scans', require('./routes/scans'));
 app.use('/api/uploads', require('./routes/uploads'));
 app.use('/api/backup', require('./routes/backup'));
 app.use('/api/antivirus', require('./routes/antivirus'));
+app.use('/api/wifi', require('./routes/wifi'));
 app.use('/api/services', require('./routes/services'));
 app.use('/api/audit-logs', require('./routes/auditLogs'));
 app.use('/api/oidc', require('./routes/oidc'));

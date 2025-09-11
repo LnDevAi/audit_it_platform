@@ -35,6 +35,9 @@ const ServerMetric = require('./ServerMetric');
 const BackupConfig = require('./BackupConfig');
 const BackupEvent = require('./BackupEvent');
 const AntivirusStatus = require('./AntivirusStatus');
+const WifiAccessPoint = require('./WifiAccessPoint');
+const WifiSurvey = require('./WifiSurvey');
+const WifiSecurityIssue = require('./WifiSecurityIssue');
 
 // Initialisation des modèles
 const models = {
@@ -69,7 +72,10 @@ const models = {
   ServerMetric: ServerMetric(sequelize, Sequelize.DataTypes),
   BackupConfig: BackupConfig(sequelize, Sequelize.DataTypes),
   BackupEvent: BackupEvent(sequelize, Sequelize.DataTypes),
-  AntivirusStatus: AntivirusStatus(sequelize, Sequelize.DataTypes)
+  AntivirusStatus: AntivirusStatus(sequelize, Sequelize.DataTypes),
+  WifiAccessPoint: WifiAccessPoint(sequelize, Sequelize.DataTypes),
+  WifiSurvey: WifiSurvey(sequelize, Sequelize.DataTypes),
+  WifiSecurityIssue: WifiSecurityIssue(sequelize, Sequelize.DataTypes)
 };
 
 // Configuration des associations
