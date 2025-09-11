@@ -19,6 +19,11 @@ const {
   ServiceTask,
   Appointment,
   ServiceReport,
+  SoftwareInstallation,
+  ServerApplication,
+  ServerMetric,
+  BackupConfig,
+  BackupEvent,
 } = require('../models');
 
 async function main() {
@@ -73,9 +78,16 @@ async function main() {
     });
 
     // Assets
-    await InventoryItem.bulkCreate([
+    const invItems = await InventoryItem.bulkCreate([
       { site_id: site.id, category: 'server', brand: 'Dell', model: 'R740', location: 'DC-1', status: 'active' },
       { site_id: site.id, category: 'desktop', brand: 'HP', model: 'EliteDesk', location: 'Open Space', status: 'active' },
+    ], { returning: true });
+
+    // Software installations
+    await SoftwareInstallation.bulkCreate([
+      { inventory_item_id: invItems[0].id, name: 'Ubuntu Server', version: '22.04 LTS', vendor: 'Canonical', critical: true },
+      { inventory_item_id: invItems[0].id, name: 'Nginx', version: '1.24', vendor: 'F5 Nginx' },
+      { inventory_item_id: invItems[1].id, name: 'Microsoft Office', version: '365', vendor: 'Microsoft' }
     ]);
 
     // Network devices
@@ -83,6 +95,18 @@ async function main() {
       { site_id: site.id, ip_address: '192.168.10.1', hostname: 'core-sw', device_type: 'switch', manufacturer: 'Cisco', status: 'active' },
       { site_id: site.id, ip_address: '192.168.10.10', hostname: 'app-srv', device_type: 'server', manufacturer: 'Dell', status: 'active' },
     ], { returning: true });
+
+    // Server applications
+    await ServerApplication.bulkCreate([
+      { network_device_id: devices[1].id, name: 'Nginx', version: '1.24', port: 443, status: 'running' },
+      { network_device_id: devices[1].id, name: 'PostgreSQL', version: '15', port: 5432, status: 'running' }
+    ]);
+
+    // Server metrics
+    await ServerMetric.bulkCreate([
+      { network_device_id: devices[1].id, cpu_percent: 35, mem_percent: 62, disk_percent: 70, load_1m: 0.8, load_5m: 0.7, load_15m: 0.6 },
+      { network_device_id: devices[1].id, cpu_percent: 28, mem_percent: 60, disk_percent: 69, load_1m: 0.6, load_5m: 0.5, load_15m: 0.5 }
+    ]);
 
     // Vulnerabilities
     await Vulnerability.bulkCreate([
@@ -109,6 +133,13 @@ async function main() {
       category: 'document',
       uploaded_by: admin.id,
     });
+
+    // Backup config & events
+    await BackupConfig.create({ organization_id: org.id, strategy: 'mixed', schedule_cron: '0 2 * * *', retention_days: 30, offsite_enabled: true, tested_at: new Date(Date.now() - 20 * 24 * 3600 * 1000), last_success_at: new Date(), tooling: 'Veeam' });
+    await BackupEvent.bulkCreate([
+      { organization_id: org.id, type: 'backup', status: 'success', started_at: new Date(Date.now() - 2 * 24 * 3600 * 1000), finished_at: new Date(Date.now() - 2 * 24 * 3600 * 1000 + 3600 * 1000), size_bytes: 50 * 1024 * 1024 * 1024, location: 'S3' },
+      { organization_id: org.id, type: 'backup', status: 'success', started_at: new Date(Date.now() - 1 * 24 * 3600 * 1000), finished_at: new Date(Date.now() - 1 * 24 * 3600 * 1000 + 3600 * 1000), size_bytes: 51 * 1024 * 1024 * 1024, location: 'S3' }
+    ]);
 
     // Service offerings
     const offerings = await ServiceOffering.bulkCreate([

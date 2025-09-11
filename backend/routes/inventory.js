@@ -22,7 +22,7 @@ router.get('/', authenticateToken, async (req, res) => {
     const pageSize = Math.min(parseInt(limit), 100);
     const offset = (pageNum - 1) * pageSize;
 
-    const { InventoryItem, AuditSite, AuditMission, Organization } = require('../models');
+    const { InventoryItem, AuditSite, AuditMission, Organization, SoftwareInstallation, FileUpload } = require('../models');
 
     const where = {};
     if (category) where.category = category;
@@ -57,7 +57,11 @@ router.get('/', authenticateToken, async (req, res) => {
 
     const { count, rows } = await InventoryItem.findAndCountAll({
       where,
-      include,
+      include: [
+        ...include,
+        { model: SoftwareInstallation, as: 'software', required: false },
+        { model: FileUpload, as: 'files', required: false }
+      ],
       offset,
       limit: pageSize,
       order: [['updated_at', 'DESC']]

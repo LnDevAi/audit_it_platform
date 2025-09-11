@@ -49,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('document', 'image', 'report', 'scan_result', 'other'),
       defaultValue: 'other'
     },
+    inventory_item_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'inventory_items', key: 'id' }
+    },
     uploaded_by: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -73,6 +78,10 @@ module.exports = (sequelize, DataTypes) => {
     FileUpload.belongsTo(models.User, {
       foreignKey: 'uploaded_by',
       as: 'uploader'
+    });
+    FileUpload.belongsTo(models.InventoryItem, {
+      foreignKey: 'inventory_item_id',
+      as: 'inventoryItem'
     });
   };
 

@@ -70,6 +70,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'site_id',
       as: 'site'
     });
+    InventoryItem.hasMany(models.SoftwareInstallation, {
+      foreignKey: 'inventory_item_id',
+      as: 'software'
+    });
+    InventoryItem.hasMany(models.FileUpload, {
+      foreignKey: 'inventory_item_id',
+      as: 'files'
+    });
   };
 
   return InventoryItem;

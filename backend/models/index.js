@@ -29,6 +29,11 @@ const ServiceOrder = require('./ServiceOrder');
 const ServiceTask = require('./ServiceTask');
 const Appointment = require('./Appointment');
 const ServiceReport = require('./ServiceReport');
+const SoftwareInstallation = require('./SoftwareInstallation');
+const ServerApplication = require('./ServerApplication');
+const ServerMetric = require('./ServerMetric');
+const BackupConfig = require('./BackupConfig');
+const BackupEvent = require('./BackupEvent');
 
 // Initialisation des modèles
 const models = {
@@ -57,7 +62,12 @@ const models = {
   ServiceOrder: ServiceOrder(sequelize, Sequelize.DataTypes),
   ServiceTask: ServiceTask(sequelize, Sequelize.DataTypes),
   Appointment: Appointment(sequelize, Sequelize.DataTypes),
-  ServiceReport: ServiceReport(sequelize, Sequelize.DataTypes)
+  ServiceReport: ServiceReport(sequelize, Sequelize.DataTypes),
+  SoftwareInstallation: SoftwareInstallation(sequelize, Sequelize.DataTypes),
+  ServerApplication: ServerApplication(sequelize, Sequelize.DataTypes),
+  ServerMetric: ServerMetric(sequelize, Sequelize.DataTypes),
+  BackupConfig: BackupConfig(sequelize, Sequelize.DataTypes),
+  BackupEvent: BackupEvent(sequelize, Sequelize.DataTypes)
 };
 
 // Configuration des associations
