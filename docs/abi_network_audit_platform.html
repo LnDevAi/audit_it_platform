@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABI Network Audit Platform - Version Finale</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 10px 6px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.7rem;
+            min-width: 85px;
+            margin: 2px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(249, 249, 249, 0.7);
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+        }
+
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid rgba(52, 152, 219, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.2);
+            border-color: #3498db;
+        }
+
+        .tool-card h4 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .tool-card p {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(52, 73, 94, 0.1);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(52, 73, 94, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .results-table th {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .results-table tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-online { background: rgba(46, 204, 113, 0.2); color: #27ae60; }
+        .status-offline { background: rgba(231, 76, 60, 0.2); color: #c0392b; }
+        .status-warning { background: rgba(241, 196, 15, 0.2); color: #f39c12; }
+        .status-good { background: rgba(46, 204, 113, 0.2); color: #27ae60; }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-info {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: #3498db;
+            color: #2980b9;
+        }
+
+        .alert-success {
+            background: rgba(46, 204, 113, 0.1);
+            border-color: #2ecc71;
+            color: #27ae60;
+        }
+
+        .alert-warning {
+            background: rgba(241, 196, 15, 0.1);
+            border-color: #f1c40f;
+            color: #f39c12;
+        }
+
+        .alert-danger {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: #e74c3c;
+            color: #c0392b;
+        }
+
+        .console {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin: 20px 0;
+            height: 250px;
+            overflow-y: auto;
+            border: 2px solid #34495e;
+        }
+
+        .console-line {
+            margin-bottom: 3px;
+            padding: 2px 0;
+        }
+
+        .console-line.success { color: #2ecc71; }
+        .console-line.warning { color: #f39c12; }
+        .console-line.error { color: #e74c3c; }
+        .console-line.info { color: #3498db; }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        .network-map {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 300px;
+            border: 2px dashed #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header h1 { font-size: 2rem; }
+            .nav-tabs { flex-direction: column; }
+            .tool-grid { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .nav-tab { font-size: 0.8rem; min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌐 ABI Network Audit Platform</h1>
+            <p class="subtitle">Plateforme complète d'audit réseau - Version finale stabilisée</p>
+            
+            <div class="status-bar">
+                <div>
+                    <strong>Mission :</strong> Audit informatique ABI
+                </div>
+                <div>
+                    <strong>Phase :</strong> <span id="currentPhase">Prêt pour l'audit</span>
+                </div>
+                <div>
+                    <strong>Auditeur :</strong> E-DEFENCE
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('discovery', this)">🔍 Découverte</button>
+            <button class="nav-tab" onclick="showTab('inventory', this)">📋 Inventaire</button>
+            <button class="nav-tab" onclick="showTab('mapping', this)">🗺️ Cartographie</button>
+            <button class="nav-tab" onclick="showTab('performance', this)">⚡ Performance</button>
+            <button class="nav-tab" onclick="showTab('security', this)">🔒 Sécurité</button>
+            <button class="nav-tab" onclick="showTab('servers', this)">🖥️ Serveurs</button>
+            <button class="nav-tab" onclick="showTab('backup', this)">💾 Sauvegarde</button>
+            <button class="nav-tab" onclick="showTab('report', this)">📊 Rapport</button>
+        </div>
+
+        <!-- Discovery Tab -->
+        <div id="discovery" class="tab-content active">
+            <div class="section">
+                <h3>🔍 Découverte du réseau ABI</h3>
+                <div class="alert alert-warning">
+                    <strong>⚠️ Important :</strong> Assurez-vous d'avoir l'autorisation de la DSI avant de lancer les scans.
+                </div>
+                
+                <div class="form-group">
+                    <label>Plage IP à scanner - Réseau ABI</label>
+                    <select id="ipRange">
+                        <option value="192.168.10.0/24">192.168.10.0/24 (Infrastructure)</option>
+                        <option value="192.168.11.0/24">192.168.11.0/24 (Serveurs)</option>
+                        <option value="192.168.40.0/24">192.168.40.0/24 (Utilisateurs)</option>
+                        <option value="192.168.41.0/24">192.168.41.0/24 (Équipements)</option>
+                        <option value="all">Tous les réseaux</option>
+                    </select>
+                </div>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="startPingSweep()">
+                        <h4>📡</h4>
+                        <p>Ping Sweep</p>
+                        <p>Découverte des hôtes actifs</p>
+                        <button class="btn">Lancer le scan</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="startPortScan()">
+                        <h4>🎯</h4>
+                        <p>Scan de ports</p>
+                        <p>Identification des services</p>
+                        <button class="btn">Scanner les ports</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="startServiceDetection()">
+                        <h4>🔬</h4>
+                        <p>Détection de services</p>
+                        <p>Analyse des applications</p>
+                        <button class="btn">Détecter services</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📊 Résultats de découverte</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="hostsFound">0</div>
+                        <div class="metric-label">Hôtes découverts</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="servicesFound">0</div>
+                        <div class="metric-label">Services identifiés</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="vulnerableHosts">0</div>
+                        <div class="metric-label">Hôtes vulnérables</div>
+                    </div>
+                </div>
+
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Adresse IP</th>
+                            <th>Hostname</th>
+                            <th>Type</th>
+                            <th>Ports ouverts</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="discoveryTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #7f8c8d;">
+                                Aucun scan lancé. Utilisez les outils ci-dessus.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3>💻 Console d'exécution</h3>
+                <div class="console" id="discoveryConsole">
+                    <div class="console-line info">[INFO] ABI Network Discovery Tool v3.0</div>
+                    <div class="console-line info">[INFO] Plateforme stabilisée - Prête pour l'audit ABI</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="inventory" class="tab-content">
+            <div class="section">
+                <h3>📋 Inventaire complet du parc informatique ABI</h3>
+                <div class="alert alert-info">
+                    <strong>ℹ️ Objectif :</strong> Scanner tous les équipements, spécifications, applications et fichiers partagés.
+                </div>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="scanAllDevices()">
+                        <h4>🔍</h4>
+                        <p>Scan global d'équipements</p>
+                        <p>Tous réseaux et équipements</p>
+                        <button class="btn">Scanner équipements</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="detectHardwareSpecs()">
+                        <h4>🔧</h4>
+                        <p>Spécifications matérielles</p>
+                        <p>CPU, RAM, stockage, OS</p>
+                        <button class="btn">Détecter spécifications</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="scanInstalledSoftware()">
+                        <h4>💿</h4>
+                        <p>Applications installées</p>
+                        <p>Logiciels et versions</p>
+                        <button class="btn">Scanner logiciels</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="scanSharedFiles()">
+                        <h4>📁</h4>
+                        <p>Fichiers partagés</p>
+                        <p>Dossiers réseau et partages</p>
+                        <button class="btn btn-warning">Scanner partages</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📊 Vue d'ensemble de l'inventaire</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalInventoryItems">0</div>
+                        <div class="metric-label">Équipements inventoriés</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalApplications">0</div>
+                        <div class="metric-label">Applications détectées</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="totalShares">0</div>
+                        <div class="metric-label">Partages réseau</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="inventoryScore">--</div>
+                        <div class="metric-label">Score inventaire</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🖥️ Inventaire détaillé par équipement</h3>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Équipement</th>
+                            <th>Type</th>
+                            <th>Spécifications</th>
+                            <th>OS</th>
+                            <th>Applications</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #7f8c8d;">
+                                Lancez le scan global pour commencer l'inventaire
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mapping Tab -->
+        <div id="mapping" class="tab-content">
+            <div class="section">
+                <h3>🗺️ Cartographie réseau</h3>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="generateTopology()">
+                        <h4>🏗️</h4>
+                        <p>Topologie automatique</p>
+                        <p>Génération du schéma réseau</p>
+                        <button class="btn btn-success">Générer</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="analyzeRouting()">
+                        <h4>🛣️</h4>
+                        <p>Analyse de routage</p>
+                        <p>Tables de routage et chemins</p>
+                        <button class="btn">Analyser</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="mapVLANs()">
+                        <h4>🏷️</h4>
+                        <p>Cartographie VLANs</p>
+                        <p>Segmentation réseau</p>
+                        <button class="btn">Mapper VLANs</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Schéma réseau ABI</h3>
+                <div class="network-map" id="networkMap">
+                    <div>
+                        <h4>🗺️ Cartographie réseau ABI</h4>
+                        <p>Lancez la topologie automatique pour visualiser l'architecture</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Tab -->
+        <div id="performance" class="tab-content">
+            <div class="section">
+                <h3>⚡ Tests de performance réseau</h3>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="testLatency()">
+                        <h4>⏱️</h4>
+                        <p>Test de latence</p>
+                        <p>Mesure des temps de réponse</p>
+                        <button class="btn">Tester latence</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="testBandwidth()">
+                        <h4>📊</h4>
+                        <p>Test de bande passante</p>
+                        <p>Débit upload/download</p>
+                        <button class="btn">Tester débit</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="testConnectivity()">
+                        <h4>🔗</h4>
+                        <p>Test de connectivité</p>
+                        <p>Disponibilité des services</p>
+                        <button class="btn">Tester connectivité</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📈 Métriques de performance</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="avgLatency">-- ms</div>
+                        <div class="metric-label">Latence moyenne</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="bandwidth">-- Mbps</div>
+                        <div class="metric-label">Bande passante</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="availability">--%</div>
+                        <div class="metric-label">Disponibilité</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="packetLoss">--%</div>
+                        <div class="metric-label">Perte de paquets</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div id="security" class="tab-content">
+            <div class="section">
+                <h3>🔒 Audit de sécurité réseau</h3>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="scanVulnerabilities()">
+                        <h4>🛡️</h4>
+                        <p>Scan de vulnérabilités</p>
+                        <p>Recherche de failles connues</p>
+                        <button class="btn btn-warning">Scanner vulnérabilités</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="testFirewall()">
+                        <h4>🔥</h4>
+                        <p>Test pare-feu</p>
+                        <p>Analyse des règles</p>
+                        <button class="btn">Tester firewall</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="auditPorts()">
+                        <h4>🚪</h4>
+                        <p>Audit des ports</p>
+                        <p>Ports ouverts non autorisés</p>
+                        <button class="btn">Auditer ports</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Servers Tab -->
+        <div id="servers" class="tab-content">
+            <div class="section">
+                <h3>🖥️ Analyse d'utilisation des serveurs</h3>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="scanServerResources()">
+                        <h4>📊</h4>
+                        <p>Scan des ressources</p>
+                        <p>CPU, RAM, stockage</p>
+                        <button class="btn">Scanner ressources</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="analyzeApplications()">
+                        <h4>📱</h4>
+                        <p>Applications installées</p>
+                        <p>Usage et optimisation</p>
+                        <button class="btn">Analyser applications</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="generateOptimization()">
+                        <h4>🎯</h4>
+                        <p>Plan d'optimisation</p>
+                        <p>Recommandations</p>
+                        <button class="btn btn-warning">Optimiser</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup Tab -->
+        <div id="backup" class="tab-content">
+            <div class="section">
+                <h3>💾 Audit du système de sauvegarde</h3>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="auditBackupStrategy()">
+                        <h4>📋</h4>
+                        <p>Stratégie de sauvegarde</p>
+                        <p>Analyse de la politique</p>
+                        <button class="btn">Auditer stratégie</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="testBackupSystems()">
+                        <h4>🔧</h4>
+                        <p>Test des systèmes</p>
+                        <p>Vérification fonctionnement</p>
+                        <button class="btn">Tester systèmes</button>
+                    </div>
+                    
+                    <div class="tool-card" onclick="analyze2022Incident()">
+                        <h4>📅</h4>
+                        <p>Incident 2022</p>
+                        <p>Analyse impact</p>
+                        <button class="btn btn-danger">Analyser incident</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Tab -->
+        <div id="report" class="tab-content">
+            <div class="section">
+                <h3>📊 Rapport d'audit ABI</h3>
+                
+                <div class="tool-grid">
+                    <div class="tool-card" onclick="exportReport('
