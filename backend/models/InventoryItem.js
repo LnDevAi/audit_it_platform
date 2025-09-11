@@ -78,6 +78,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'inventory_item_id',
       as: 'files'
     });
+    InventoryItem.hasOne(models.AntivirusStatus, {
+      foreignKey: 'inventory_item_id',
+      as: 'antivirus'
+    });
   };
 
   return InventoryItem;

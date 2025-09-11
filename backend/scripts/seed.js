@@ -24,6 +24,7 @@ const {
   ServerMetric,
   BackupConfig,
   BackupEvent,
+  AntivirusStatus,
 } = require('../models');
 
 async function main() {
@@ -139,6 +140,12 @@ async function main() {
     await BackupEvent.bulkCreate([
       { organization_id: org.id, type: 'backup', status: 'success', started_at: new Date(Date.now() - 2 * 24 * 3600 * 1000), finished_at: new Date(Date.now() - 2 * 24 * 3600 * 1000 + 3600 * 1000), size_bytes: 50 * 1024 * 1024 * 1024, location: 'S3' },
       { organization_id: org.id, type: 'backup', status: 'success', started_at: new Date(Date.now() - 1 * 24 * 3600 * 1000), finished_at: new Date(Date.now() - 1 * 24 * 3600 * 1000 + 3600 * 1000), size_bytes: 51 * 1024 * 1024 * 1024, location: 'S3' }
+    ]);
+
+    // Antivirus statuses
+    await AntivirusStatus.bulkCreate([
+      { inventory_item_id: invItems[0].id, vendor: 'ClamAV', product: 'ClamAV', version: '0.105', real_time_protection: true, defs_version: '2025-09-01', defs_date: new Date(Date.now() - 3 * 24 * 3600 * 1000), performance_impact: 'low' },
+      { inventory_item_id: invItems[1].id, vendor: 'Windows Defender', product: 'Defender', version: '4.x', real_time_protection: true, defs_version: '1.1.23000', defs_date: new Date(Date.now() - 20 * 24 * 3600 * 1000), performance_impact: 'medium' }
     ]);
 
     // Service offerings
