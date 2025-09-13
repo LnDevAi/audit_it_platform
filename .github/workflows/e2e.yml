@@ -1,0 +1,79 @@
+name: E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'docker-compose.yml'
+      - 'postman/**'
+
+jobs:
+  end-to-end:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      docker:
+        image: docker:24.0-dind
+        options: >-
+          --privileged
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Create .env
+        run: cp .env.example .env
+
+      - name: Build stack
+        run: docker compose build
+
+      - name: Start stack
+        run: docker compose up -d
+
+      - name: Wait for backend to be healthy
+        run: |
+          echo "Waiting for backend..."
+          for i in {1..60}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health || true)
+            if [ "$STATUS" = "200" ]; then echo "Backend is up"; exit 0; fi
+            sleep 5
+          done
+          echo "Backend did not become healthy in time"; exit 1
+
+      - name: Run full-stack smoke tests
+        working-directory: backend
+        env:
+          BACKEND_URL: http://localhost:5000
+          FRONTEND_URL: http://localhost:3000
+        run: |
+          npm ci
+          node scripts/test-full-stack.js run | cat
+
+      - name: Run API Postman smoke tests
+        run: |
+          newman run postman/E-DEFENCE_Audit_Platform.postman_collection.json \
+            -e postman/E-DEFENCE_Environment.postman_environment.json \
+            --env-var base_url=http://localhost:5000 \
+            --color on --timeout 10000
+
+      - name: Show docker logs on failure
+        if: failure()
+        run: |
+          docker compose ps | cat
+          docker compose logs --no-color database | tail -n 200 | cat
+          docker compose logs --no-color backend | tail -n 200 | cat
+          docker compose logs --no-color frontend | tail -n 200 | cat
+
+      - name: Shutdown stack
+        if: always()
+        run: docker compose down -v

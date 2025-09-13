@@ -25,6 +25,8 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [twoFactorToken, setTwoFactorToken] = useState('');
+  const [recoveryCode, setRecoveryCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
@@ -36,7 +38,7 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    const result = await login(email, password);
+    const result = await login(email, password, twoFactorToken || undefined, recoveryCode || undefined);
     
     if (result.success) {
       navigate('/');
@@ -132,6 +134,26 @@ const Login = () => {
                   </InputAdornment>
                 ),
               }}
+            />
+
+            <TextField
+              fullWidth
+              label="Code 2FA (TOTP)"
+              type="text"
+              value={twoFactorToken}
+              onChange={(e) => setTwoFactorToken(e.target.value)}
+              sx={{ mb: 2 }}
+              placeholder="123456"
+            />
+
+            <TextField
+              fullWidth
+              label="Code de récupération (optionnel)"
+              type="text"
+              value={recoveryCode}
+              onChange={(e) => setRecoveryCode(e.target.value)}
+              sx={{ mb: 3 }}
+              placeholder="xxxx-xxxx"
             />
 
             <Button

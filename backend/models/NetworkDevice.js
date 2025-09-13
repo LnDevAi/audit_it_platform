@@ -97,5 +97,13 @@ module.exports = (sequelize, DataTypes) => {
     ]
   });
 
+  // Associations
+  NetworkDevice.associate = (models) => {
+    NetworkDevice.belongsTo(models.AuditSite, {
+      foreignKey: 'site_id',
+      as: 'site'
+    });
+  };
+
   return NetworkDevice;
 };

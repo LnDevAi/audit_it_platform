@@ -1,6 +1,16 @@
 const { Sequelize } = require('sequelize');
 const { logger } = require('./logger');
-const { recordDatabaseOperation } = require('./metrics');
+// Avoid static import of metrics to prevent circular dependency with metrics.js
+const safeRecordDbOp = (operation, table, organizationId = null, duration = null) => {
+  try {
+    const { recordDatabaseOperation } = require('./metrics');
+    if (typeof recordDatabaseOperation === 'function') {
+      recordDatabaseOperation(operation, table, organizationId, duration);
+    }
+  } catch (_) {
+    // metrics not initialized yet or disabled
+  }
+};
 require('dotenv').config();
 
 // Détection automatique du type de base de données
@@ -53,7 +63,7 @@ if (useSQLite) {
       logging: process.env.NODE_ENV === 'development' ? 
         (sql, timing) => {
           logger.debug(`SQL Query (${timing}ms): ${sql}`);
-          recordDatabaseOperation('query', 'unknown', null, timing);
+          safeRecordDbOp('query', 'unknown', null, timing);
         } : false,
       
       // Pool de connexions optimisé
@@ -83,7 +93,6 @@ if (useSQLite) {
         underscored: false,
         freezeTableName: true,
         // Optimisations pour les performances
-        indexes: true,
         paranoid: false // Désactiver soft deletes par défaut pour les performances
       }
     }

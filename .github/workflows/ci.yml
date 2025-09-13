@@ -1,3 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci
+
+      - name: Lint backend
+        working-directory: backend
+        run: npm run lint
+
+      - name: Format check backend
+        working-directory: backend
+        run: npm run format:check
+
+      - name: Run backend unit tests
+        working-directory: backend
+        env:
+          NODE_ENV: test
+        run: npm run test:ci
+
+      - name: Security checks
+        run: node scripts/security-check.js | cat
+
+      - name: Build backend Docker image
+        run: docker build -t local/audit-backend:ci ./backend
+
+      - name: Build frontend Docker image
+        run: docker build -t local/audit-frontend:ci ./frontend
 name: CI/CD Pipeline
 
 on:

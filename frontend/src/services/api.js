@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 // Create axios instance
 const api = axios.create({
@@ -119,11 +119,14 @@ export const sitesAPI = {
 };
 
 // Inventory API
-export const inventoryAPI = {
-  getInventory: (params) => api.get('/inventory', { params }),
-  createInventoryItem: (itemData) => api.post('/inventory', itemData),
-  updateInventoryItem: (id, itemData) => api.put(`/inventory/${id}`, itemData),
-  deleteInventoryItem: (id) => api.delete(`/inventory/${id}`),
+// Services API
+export const servicesAPI = {
+  getOfferings: (params) => api.get('/services/offerings', { params }),
+  createOrder: (data) => api.post('/services/orders', data),
+  getOrders: (params) => api.get('/services/orders', { params }),
+  createTask: (orderId, data) => api.post(`/services/orders/${orderId}/tasks`, data),
+  createAppointment: (orderId, data) => api.post(`/services/orders/${orderId}/appointments`, data),
+  createReport: (orderId, data) => api.post(`/services/orders/${orderId}/report`, data),
 };
 
 // Infrastructure API

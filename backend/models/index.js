@@ -24,6 +24,20 @@ const FileUpload = require('./FileUpload');
 const DataImport = require('./DataImport');
 const DataExport = require('./DataExport');
 const ApiKey = require('./ApiKey');
+const ServiceOffering = require('./ServiceOffering');
+const ServiceOrder = require('./ServiceOrder');
+const ServiceTask = require('./ServiceTask');
+const Appointment = require('./Appointment');
+const ServiceReport = require('./ServiceReport');
+const SoftwareInstallation = require('./SoftwareInstallation');
+const ServerApplication = require('./ServerApplication');
+const ServerMetric = require('./ServerMetric');
+const BackupConfig = require('./BackupConfig');
+const BackupEvent = require('./BackupEvent');
+const AntivirusStatus = require('./AntivirusStatus');
+const WifiAccessPoint = require('./WifiAccessPoint');
+const WifiSurvey = require('./WifiSurvey');
+const WifiSecurityIssue = require('./WifiSecurityIssue');
 
 // Initialisation des modèles
 const models = {
@@ -47,7 +61,21 @@ const models = {
   FileUpload: FileUpload(sequelize, Sequelize.DataTypes),
   DataImport: DataImport(sequelize, Sequelize.DataTypes),
   DataExport: DataExport(sequelize, Sequelize.DataTypes),
-  ApiKey: ApiKey
+  ApiKey: ApiKey,
+  ServiceOffering: ServiceOffering(sequelize, Sequelize.DataTypes),
+  ServiceOrder: ServiceOrder(sequelize, Sequelize.DataTypes),
+  ServiceTask: ServiceTask(sequelize, Sequelize.DataTypes),
+  Appointment: Appointment(sequelize, Sequelize.DataTypes),
+  ServiceReport: ServiceReport(sequelize, Sequelize.DataTypes),
+  SoftwareInstallation: SoftwareInstallation(sequelize, Sequelize.DataTypes),
+  ServerApplication: ServerApplication(sequelize, Sequelize.DataTypes),
+  ServerMetric: ServerMetric(sequelize, Sequelize.DataTypes),
+  BackupConfig: BackupConfig(sequelize, Sequelize.DataTypes),
+  BackupEvent: BackupEvent(sequelize, Sequelize.DataTypes),
+  AntivirusStatus: AntivirusStatus(sequelize, Sequelize.DataTypes),
+  WifiAccessPoint: WifiAccessPoint(sequelize, Sequelize.DataTypes),
+  WifiSurvey: WifiSurvey(sequelize, Sequelize.DataTypes),
+  WifiSecurityIssue: WifiSecurityIssue(sequelize, Sequelize.DataTypes)
 };
 
 // Configuration des associations

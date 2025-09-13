@@ -64,5 +64,25 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: 'updated_at'
   });
 
+  // Associations
+  InventoryItem.associate = (models) => {
+    InventoryItem.belongsTo(models.AuditSite, {
+      foreignKey: 'site_id',
+      as: 'site'
+    });
+    InventoryItem.hasMany(models.SoftwareInstallation, {
+      foreignKey: 'inventory_item_id',
+      as: 'software'
+    });
+    InventoryItem.hasMany(models.FileUpload, {
+      foreignKey: 'inventory_item_id',
+      as: 'files'
+    });
+    InventoryItem.hasOne(models.AntivirusStatus, {
+      foreignKey: 'inventory_item_id',
+      as: 'antivirus'
+    });
+  };
+
   return InventoryItem;
 };
