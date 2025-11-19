@@ -108,12 +108,12 @@ const testConnection = async () => {
     await sequelize.authenticate();
     const duration = Date.now() - start;
     logger.info(`Database connection successful (${duration}ms)`);
-    recordDatabaseOperation('connection', 'system', null, duration);
+    safeRecordDbOp('connection', 'system', null, duration);
     return true;
   } catch (error) {
     const duration = Date.now() - start;
     logger.error(`Database connection failed (${duration}ms):`, error);
-    recordDatabaseOperation('connection_error', 'system', null, duration);
+    safeRecordDbOp('connection_error', 'system', null, duration);
     return false;
   }
 };

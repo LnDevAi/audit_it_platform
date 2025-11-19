@@ -1,0 +1,109 @@
+spec:
+  name: audit-platform
+  static_sites:
+    - name: audit-frontend
+      git:
+        repo_clone_url: https://github.com/ORG/audit-platform.git
+        branch: main
+      source_dir: frontend
+      build_command: npm install && npm run build
+      output_dir: build
+      envs:
+        - key: REACT_APP_API_URL
+          scope: RUN_AND_BUILD
+          value: ${backend.PUBLIC_URL}/api
+  services:
+    - name: backend
+      git:
+        repo_clone_url: https://github.com/ORG/audit-platform.git
+        branch: main
+      source_dir: backend
+      run_command: npm run start
+      build_command: npm install
+      environment_slug: node-js
+      instance_size_slug: basic-xxs
+      envs:
+        - key: NODE_ENV
+          scope: RUN_AND_BUILD
+          value: production
+        - key: PORT
+          scope: RUN_AND_BUILD
+          value: "5000"
+        - key: DB_HOST
+          scope: RUN_AND_BUILD
+          value: ${audit-db.HOSTNAME}
+        - key: DB_PORT
+          scope: RUN_AND_BUILD
+          value: ${audit-db.PORT}
+        - key: DB_NAME
+          scope: RUN_AND_BUILD
+          value: ${audit-db.DATABASE}
+        - key: DB_USER
+          scope: RUN_AND_BUILD
+          value: ${audit-db.USERNAME}
+        - key: DB_PASSWORD
+          scope: RUN_AND_BUILD
+          value: ${audit-db.PASSWORD}
+        - key: REDIS_HOST
+          scope: RUN_AND_BUILD
+          value: ${audit-redis.HOSTNAME}
+        - key: REDIS_PORT
+          scope: RUN_AND_BUILD
+          value: ${audit-redis.PORT}
+        - key: REDIS_PASSWORD
+          scope: RUN_AND_BUILD
+          value: ${audit-redis.PASSWORD}
+        - key: FRONTEND_URL
+          scope: RUN_AND_BUILD
+          value: https://${audit-frontend.HOSTNAME}
+        - key: JWT_SECRET
+          scope: RUN_AND_BUILD
+          value: ${var.JWT_SECRET}
+        - key: JWT_REFRESH_SECRET
+          scope: RUN_AND_BUILD
+          value: ${var.JWT_REFRESH_SECRET}
+        - key: SESSION_SECRET
+          scope: RUN_AND_BUILD
+          value: ${var.SESSION_SECRET}
+        - key: SMTP_HOST
+          scope: RUN_AND_BUILD
+          value: ${var.SMTP_HOST}
+        - key: SMTP_PORT
+          scope: RUN_AND_BUILD
+          value: ${var.SMTP_PORT}
+        - key: SMTP_USER
+          scope: RUN_AND_BUILD
+          value: ${var.SMTP_USER}
+        - key: SMTP_PASS
+          scope: RUN_AND_BUILD
+          value: ${var.SMTP_PASS}
+        - key: USE_SQLITE
+          scope: RUN_AND_BUILD
+          value: "false"
+        - key: AUTO_PORT_CONFIG
+          scope: RUN_AND_BUILD
+          value: "false"
+  databases:
+    - name: audit-db
+      engine: MYSQL
+      version: "8"
+      production: true
+  redis:
+    - name: audit-redis
+      version: "7"
+      plan: basic
+  envs:
+    - key: JWT_SECRET
+      type: SECRET
+    - key: JWT_REFRESH_SECRET
+      type: SECRET
+    - key: SESSION_SECRET
+      type: SECRET
+    - key: SMTP_HOST
+      type: SECRET
+    - key: SMTP_PORT
+      type: SECRET
+    - key: SMTP_USER
+      type: SECRET
+    - key: SMTP_PASS
+      type: SECRET

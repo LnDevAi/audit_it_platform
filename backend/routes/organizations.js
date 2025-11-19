@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const { Organization, User, SubscriptionPlan, Invoice, AuditMission } = require('../models');
 const { authenticateToken, requirePermission, requireRole } = require('../middleware/auth');
 const router = express.Router();

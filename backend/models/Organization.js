@@ -15,15 +15,15 @@ module.exports = (sequelize, DataTypes) => {
         len: [2, 255]
       }
     },
-    slug: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: true,
-      validate: {
-        isAlphanumeric: true,
-        len: [2, 100]
-      }
-    },
+      slug: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        unique: true,
+        validate: {
+          is: /^[a-z0-9-]+$/i,
+          len: [2, 100]
+        }
+      },
     domain: {
       type: DataTypes.STRING(255),
       allowNull: true,

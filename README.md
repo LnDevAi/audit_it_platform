@@ -234,6 +234,7 @@ scripts\test-ci.bat
 - [Guide Postman complet](POSTMAN_GUIDE.md)
 - [Configuration des secrets GitHub](GITHUB_SECRETS.md)
 - [Guide de gestion des ports](PORT_MANAGEMENT_GUIDE.md)
+- [Déploiement Render & OceanApp](docs/DEPLOY_CLOUD.md)
 
 ### 🔧 Gestion Automatique des Ports
 
