@@ -1,3 +1,5 @@
+const isCI = process.env.CI === 'true';
+
 module.exports = {
   // Environnement de test
   testEnvironment: 'node',
@@ -12,12 +14,17 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
-    '/build/'
+    '/build/',
+    ...(isCI ? [] : [
+      '<rootDir>/tests/performance/',
+      '<rootDir>/tests/integration/',
+      '<rootDir>/tests/auth.test.js'
+    ])
   ],
   
   // Collecte de couverture
-  collectCoverage: true,
-  collectCoverageFrom: [
+  collectCoverage: isCI,
+  collectCoverageFrom: isCI ? [
     'routes/**/*.js',
     'models/**/*.js',
     'middleware/**/*.js',
@@ -25,30 +32,31 @@ module.exports = {
     '!**/node_modules/**',
     '!**/tests/**',
     '!**/coverage/**'
-  ],
+  ] : undefined,
   
   // Répertoire de couverture
   coverageDirectory: 'coverage',
   
   // Seuils de couverture
-  coverageThreshold: {
+  coverageThreshold: isCI ? {
     global: {
       branches: 70,
       functions: 70,
       lines: 70,
       statements: 70
     }
-  },
+  } : undefined,
   
   // Variables d'environnement pour les tests
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
   
   // Timeout pour les tests
   testTimeout: 10000,
-  maxWorkers: 1,
+  maxWorkers: isCI ? 1 : 2,
   
   // Verbosité
   verbose: true,
+  passWithNoTests: !isCI,
   
   // Rapport de couverture
   coverageReporters: [

@@ -48,8 +48,15 @@ global.console = {
 // Fonction utilitaire pour nettoyer la base de données de test
 global.cleanupTestDatabase = async () => {
   try {
+    const models = Object.values(sequelize.models);
+    for (const model of models) {
+      await model.destroy({ where: {}, truncate: true, force: true, cascade: true });
+    }
+
     if (sequelize.getDialect() === 'sqlite') {
-      await sequelize.truncate({ cascade: true, restartIdentity: true });
+      await sequelize.query('PRAGMA foreign_keys = OFF;');
+      await sequelize.query('DELETE FROM sqlite_sequence;').catch(() => {});
+      await sequelize.query('PRAGMA foreign_keys = ON;');
     } else {
       await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
       const tables = await sequelize.query('SHOW TABLES');
@@ -113,7 +120,8 @@ global.getAuthToken = async (email = 'test@example.com', password = 'testpasswor
 
 // Configuration des hooks globaux
 beforeAll(async () => {
-  await sequelize.sync({ force: true });
+  await sequelize.sync();
+  await global.cleanupTestDatabase();
 });
 
 afterAll(async () => {
