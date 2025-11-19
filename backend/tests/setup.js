@@ -5,10 +5,11 @@ process.env.JWT_SECRET = 'test_jwt_secret_for_testing_only';
 process.env.JWT_EXPIRES_IN = '1h';
 
 // Configuration des variables d'environnement de test
-process.env.DB_HOST = 'localhost';
-process.env.DB_PORT = '3306';
-process.env.DB_USER = 'test_user';
-process.env.DB_PASSWORD = 'test_password';
+process.env.DB_HOST = '';
+process.env.DB_PORT = '';
+process.env.DB_USER = '';
+process.env.DB_PASSWORD = '';
+process.env.USE_SQLITE = 'true';
 
 // Désactiver les logs pendant les tests
 process.env.LOG_LEVEL = 'error';
@@ -31,6 +32,8 @@ jest.mock('../config/logger', () => ({
   logSecurityEvent: jest.fn()
 }));
 
+const { sequelize } = require('../models');
+
 // Configuration globale pour les tests
 global.console = {
   ...console,
@@ -44,19 +47,18 @@ global.console = {
 
 // Fonction utilitaire pour nettoyer la base de données de test
 global.cleanupTestDatabase = async () => {
-  const { sequelize } = require('../models');
-  
   try {
-    // Supprimer toutes les données de test
-    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
-    
-    const tables = await sequelize.query('SHOW TABLES');
-    for (const table of tables[0]) {
-      const tableName = Object.values(table)[0];
-      await sequelize.query(`TRUNCATE TABLE ${tableName}`);
+    if (sequelize.getDialect() === 'sqlite') {
+      await sequelize.truncate({ cascade: true, restartIdentity: true });
+    } else {
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+      const tables = await sequelize.query('SHOW TABLES');
+      for (const table of tables[0]) {
+        const tableName = Object.values(table)[0];
+        await sequelize.query(`TRUNCATE TABLE ${tableName}`);
+      }
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
     }
-    
-    await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
   } catch (error) {
     console.error('Erreur lors du nettoyage de la base de test:', error);
   }
@@ -111,13 +113,11 @@ global.getAuthToken = async (email = 'test@example.com', password = 'testpasswor
 
 // Configuration des hooks globaux
 beforeAll(async () => {
-  // Configuration initiale avant tous les tests
-  console.log('🚀 Démarrage des tests...');
+  await sequelize.sync({ force: true });
 });
 
 afterAll(async () => {
-  // Nettoyage final après tous les tests
-  console.log('✅ Tests terminés');
+  await sequelize.close();
 });
 
 // Configuration pour chaque test

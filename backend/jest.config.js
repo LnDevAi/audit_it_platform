@@ -45,6 +45,7 @@ module.exports = {
   
   // Timeout pour les tests
   testTimeout: 10000,
+  maxWorkers: 1,
   
   // Verbosité
   verbose: true,
